@@ -101,25 +101,25 @@ function UpsellDialog({ open, onOpenChange }: { open: boolean; onOpenChange: (op
   return (
     <Dialog.Root open={open} onOpenChange={onOpenChange}>
       <Dialog.Portal>
-        <Dialog.Overlay ref={overlayRef} className="fixed inset-0 z-[100] bg-forest-deep/90 backdrop-blur-sm" />
+        <Dialog.Overlay ref={overlayRef} className="fixed inset-0 z-[100] bg-wine-deep/90 backdrop-blur-sm" />
         <Dialog.Content ref={contentRef} className="fixed inset-0 z-[101] overflow-y-auto p-3 focus:outline-none md:p-4">
           <div className="flex min-h-full justify-center py-3">
-            <div className="upsell-panel relative my-auto w-full max-w-4xl overflow-hidden rounded-3xl border-2 border-gold/60 bg-background shadow-soft">
+            <div className="upsell-panel relative my-auto w-full max-w-4xl overflow-hidden rounded-3xl border-2 border-gold bg-rose shadow-cta">
               <Dialog.Close asChild>
                 <button
                   type="button"
                   aria-label="Fermer la fenêtre"
-                  className="absolute right-4 top-4 z-20 flex h-10 w-10 items-center justify-center rounded-full border border-gold/40 bg-forest-deep/70 text-secondary-foreground transition hover:bg-forest-deep"
+                  className="absolute right-4 top-4 z-20 flex h-10 w-10 items-center justify-center rounded-full border border-gold/50 bg-wine-deep/70 text-secondary-foreground transition hover:bg-wine-deep"
                 >
                   <X className="h-5 w-5" aria-hidden />
                 </button>
               </Dialog.Close>
 
-              <div className="relative overflow-hidden bg-forest-gradient px-5 pb-6 pt-16 text-center text-secondary-foreground md:px-10 md:pt-7">
+              <div className="relative overflow-hidden bg-wine-gradient px-5 pb-6 pt-16 text-center text-secondary-foreground md:px-10 md:pt-7">
                 <div className="upsell-glow absolute -left-10 top-0 h-44 w-44 rounded-full bg-gold/20 blur-3xl" aria-hidden />
-                <div className="upsell-glow absolute -right-10 bottom-0 h-44 w-44 rounded-full bg-primary/30 blur-3xl" aria-hidden />
+                <div className="upsell-glow absolute -right-10 bottom-0 h-44 w-44 rounded-full bg-rose/25 blur-3xl" aria-hidden />
                 <div className="relative">
-                  <div className="upsell-urgency mb-5 inline-flex items-center gap-2 rounded-full bg-primary px-4 py-2 text-xs font-extrabold uppercase tracking-widest text-primary-foreground shadow-cta">
+                  <div className="upsell-urgency mb-5 inline-flex items-center gap-2 rounded-full bg-gold px-4 py-2 text-xs font-extrabold uppercase tracking-widest text-accent-foreground shadow-cta">
                     <Sparkles className="h-4 w-4" aria-hidden />
                     Black Friday Week · Offre à durée limitée
                   </div>
@@ -134,13 +134,13 @@ function UpsellDialog({ open, onOpenChange }: { open: boolean; onOpenChange: (op
                   <Dialog.Description className="mx-auto mt-3 max-w-xl text-base leading-relaxed text-secondary-foreground/90">
                     Pour seulement {additionalPrice} de plus, recevez 5 bonus exclusifs et créez encore plus pour Noël.
                   </Dialog.Description>
-                  <div className="mx-auto mt-5 max-w-md rounded-2xl border border-gold/30 bg-forest-deep/45 p-4">
-                    <CampaignCountdown mode={getMode()} />
+                  <div className="mx-auto mt-5 max-w-md rounded-2xl border border-gold/40 bg-wine-deep/45 p-4">
+                    <CampaignCountdown mode={getMode()} tone="wine" />
                   </div>
                 </div>
               </div>
 
-              <div className="bg-primary px-5 py-3 text-center text-sm font-extrabold uppercase tracking-wide text-primary-foreground">
+              <div className="bg-gold px-5 py-3 text-center text-sm font-extrabold uppercase tracking-wide text-accent-foreground">
                 150 modèles + 3 ressources supplémentaires · Seulement {additionalPrice} de plus
               </div>
 
@@ -157,7 +157,7 @@ function UpsellDialog({ open, onOpenChange }: { open: boolean; onOpenChange: (op
                     <div key={title} className="upsell-miniature overflow-hidden rounded-2xl border border-gold/25 bg-card shadow-soft">
                       <div className="relative aspect-[4/3] overflow-hidden bg-muted">
                         <img src={image} alt={alt} width={320} height={240} loading="lazy" className="h-full w-full object-cover" />
-                        <div className="absolute bottom-2 left-2 flex h-9 w-9 items-center justify-center rounded-xl bg-forest-gradient text-gold shadow-soft">
+                        <div className="absolute bottom-2 left-2 flex h-9 w-9 items-center justify-center rounded-xl bg-wine-gradient text-gold shadow-soft">
                           <Icon className="h-4 w-4" aria-hidden />
                         </div>
                       </div>

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { getDeadline, type CampaignMode } from "@/config/campaign";
 
-export function CampaignCountdown({ mode }: { mode: CampaignMode }) {
+export function CampaignCountdown({ mode, tone = "forest" }: { mode: CampaignMode; tone?: "forest" | "wine" }) {
   const deadline = getDeadline(mode);
   const [now, setNow] = useState<number | null>(null);
 
@@ -33,7 +33,7 @@ export function CampaignCountdown({ mode }: { mode: CampaignMode }) {
       </p>
       <div className="flex justify-center gap-2">
         {parts.map(([value, label]) => (
-          <div key={label} className="min-w-16 rounded-xl border border-gold/25 bg-forest-deep px-3 py-2 text-secondary-foreground">
+          <div key={label} className={`min-w-16 rounded-xl border border-gold/25 px-3 py-2 text-secondary-foreground ${tone === "wine" ? "bg-wine-deep" : "bg-forest-deep"}`}>
             <div className="font-display text-2xl font-extrabold tabular-nums">{String(value).padStart(2, "0")}</div>
             <div className="text-[10px] font-bold uppercase tracking-wider opacity-70">{label}</div>
           </div>

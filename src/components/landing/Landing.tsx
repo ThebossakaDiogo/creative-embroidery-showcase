@@ -146,23 +146,7 @@ function Hero({ mode }: { mode: CampaignMode }) {
           Imprimez l'un des <strong>200 modèles</strong>, suivez le guide et réalisez votre première carte ou décoration dès aujourd'hui.
         </p>
 
-        <div className="mx-auto mt-7 flex max-w-xl flex-wrap items-center justify-center gap-x-6 gap-y-2 rounded-3xl border border-gold/50 bg-card px-6 py-5 text-card-foreground shadow-soft">
-          <div>
-            {campaign.showReferencePrice && mode !== "evergreen" && (
-              <p className="text-sm font-bold text-muted-foreground">Au lieu de <s>{euro(campaign.referencePrice)}</s></p>
-            )}
-            <p className="eyebrow mt-1 text-primary">{mode === "blackfriday" ? "Black Friday Week" : "Offre spéciale"}</p>
-          </div>
-          <p className="font-display text-6xl font-black leading-none tracking-tight text-primary">{price}</p>
-          <div className="text-left text-sm font-bold">
-            {campaign.showReferencePrice && mode !== "evergreen" && (
-              <span className="mb-1 inline-flex rounded-full bg-primary px-3 py-1 font-bold text-primary-foreground">−{discountPct()} %</span>
-            )}
-            <p>Paiement unique</p>
-          </div>
-        </div>
-
-        <div className="mt-7">
+        <div className="mt-8">
           <Cta variant="gold">
             {mode === "blackfriday" ? "Je profite de la Black Friday Week" : mode === "noel" ? "Je profite de l'offre de Noël" : "Je découvre BordaPapel"}
           </Cta>

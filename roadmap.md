@@ -1,5 +1,7 @@
 # Tarefas
 
+- [x] Retirar o bloco de preço da hero, mantendo o destaque na seção da oferta.
+- [x] Diferenciar o popup com uma paleta vinho e dourada mais chamativa.
 - [x] Aplicar tipografia arredondada, moderna e mais legível.
 - [x] Destacar o preço real de 9,90 € e a Black Friday Week.
 - [x] Reorganizar as seções, encurtar a copy e mover o vídeo para a demonstração.
