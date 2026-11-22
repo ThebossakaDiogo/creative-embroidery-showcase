@@ -30,6 +30,24 @@ describe("purchase upgrade flow", () => {
     }
   });
 
+  it("deters image context menus and dragging without blocking page text", () => {
+    const { container } = render(<Landing />);
+    const image = container.querySelector("img");
+    expect(image).not.toBeNull();
+
+    const imageMenu = new MouseEvent("contextmenu", { bubbles: true, cancelable: true });
+    image!.dispatchEvent(imageMenu);
+    expect(imageMenu.defaultPrevented).toBe(true);
+
+    const imageDrag = new Event("dragstart", { bubbles: true, cancelable: true });
+    image!.dispatchEvent(imageDrag);
+    expect(imageDrag.defaultPrevented).toBe(true);
+
+    const pageMenu = new MouseEvent("contextmenu", { bubbles: true, cancelable: true });
+    container.querySelector("main")!.dispatchEvent(pageMenu);
+    expect(pageMenu.defaultPrevented).toBe(false);
+  });
+
   it("keeps the essential refusal usable while both checkout destinations are empty", async () => {
     const track = vi.fn();
     Object.defineProperty(window, "__lovableEvents", { writable: true, value: { track } });
@@ -47,6 +65,9 @@ describe("purchase upgrade flow", () => {
 
     fireEvent.click(essential);
     await waitFor(() => expect(screen.queryByRole("dialog")).not.toBeInTheDocument());
-    expect(track).toHaveBeenCalledWith("project.upgrade_declined", { plan: "essential", price: 9.9 });
+    expect(track).toHaveBeenCalledWith("project.upgrade_declined", {
+      plan: "essential",
+      price: 9.9,
+    });
   });
 });

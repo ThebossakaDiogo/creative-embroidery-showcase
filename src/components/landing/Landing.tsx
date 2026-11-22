@@ -1,5 +1,10 @@
 import { useEffect, useRef, useState, type ReactNode } from "react";
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 import { campaign, getMode, euro, discountPct, type CampaignMode } from "@/config/campaign";
 import {
   avantApres,
@@ -44,7 +49,27 @@ function useReveal() {
   }, []);
 }
 
-function Cta({ children, variant = "primary" }: { children: ReactNode; variant?: "primary" | "gold" }) {
+function useImageDownloadDeterrent() {
+  useEffect(() => {
+    const deterImageAction = (event: Event) => {
+      if (event.target instanceof HTMLImageElement) event.preventDefault();
+    };
+    document.addEventListener("contextmenu", deterImageAction);
+    document.addEventListener("dragstart", deterImageAction);
+    return () => {
+      document.removeEventListener("contextmenu", deterImageAction);
+      document.removeEventListener("dragstart", deterImageAction);
+    };
+  }, []);
+}
+
+function Cta({
+  children,
+  variant = "primary",
+}: {
+  children: ReactNode;
+  variant?: "primary" | "gold";
+}) {
   const openUpsell = useUpsell();
   const cls =
     variant === "gold"
@@ -74,7 +99,11 @@ function Snow() {
         <span
           key={i}
           className="snowflake text-xs"
-          style={{ left: `${(i * 53) % 100}%`, animationDuration: `${9 + (i % 6) * 2}s`, animationDelay: `${-i * 1.3}s` }}
+          style={{
+            left: `${(i * 53) % 100}%`,
+            animationDuration: `${9 + (i % 6) * 2}s`,
+            animationDelay: `${-i * 1.3}s`,
+          }}
         >
           ✦
         </span>
@@ -106,7 +135,10 @@ function DemonstrationVideo() {
   }, []);
 
   return (
-    <div ref={containerRef} className="overflow-hidden rounded-2xl border border-gold/30 bg-forest-deep shadow-soft">
+    <div
+      ref={containerRef}
+      className="overflow-hidden rounded-2xl border border-gold/30 bg-forest-deep shadow-soft"
+    >
       <video
         src={active ? demonstrationVideo.url : undefined}
         poster={demonstrationPoster}
@@ -140,27 +172,48 @@ function Hero({ mode }: { mode: CampaignMode }) {
         <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-gold/40 bg-forest-deep/40 px-4 py-2 text-xs font-bold tracking-widest text-gold">
           {eyebrowByMode[mode]}
         </div>
-        <p className="eyebrow mb-5 text-gold/80">Imprimez · Brodez · Offrez</p>
+        <p className="eyebrow mb-5 text-gold/80">Votre atelier créatif, imprimé chez vous</p>
         <h1 className="mx-auto max-w-4xl text-4xl font-extrabold leading-tight md:text-6xl">
           {mode === "evergreen" ? (
-            <>Créez de magnifiques broderies sur papier, <span className="text-gold">même en débutant.</span></>
+            <>
+              Transformez une simple feuille en broderie,{" "}
+              <span className="text-gold">même à vos débuts.</span>
+            </>
           ) : (
-            <>Créez de magnifiques cadeaux de Noël, <span className="text-gold">même si vous débutez.</span></>
+            <>
+              Pour Noël, brodez des présents que l'on gardera,{" "}
+              <span className="text-gold">même à vos débuts.</span>
+            </>
           )}
         </h1>
         <p className="mx-auto mt-5 max-w-2xl text-lg leading-relaxed text-secondary-foreground/90 md:text-xl">
-          Imprimez l'un des <strong>200 modèles</strong>, suivez le guide et réalisez votre première carte ou décoration dès aujourd'hui.
+          Choisissez parmi <strong>200 gabarits</strong>, imprimez votre favori et laissez le guide
+          vous accompagner jusqu'au dernier point.
         </p>
 
         <div className="mt-8">
           <Cta variant="gold">
-            {mode === "blackfriday" ? "Je profite de la Black Friday Week" : mode === "noel" ? "Je profite de l'offre de Noël" : "Je découvre BordaPapel"}
+            {mode === "blackfriday"
+              ? "Je profite de la Black Friday Week"
+              : mode === "noel"
+                ? "Je profite de l'offre de Noël"
+                : "Je découvre BordaPapel"}
           </Cta>
         </div>
-        <p className="mt-4 text-sm font-medium text-secondary-foreground/80">Accès immédiat · 200 modèles + 3 cadeaux · Sans abonnement</p>
+        <p className="mt-4 text-sm font-medium text-secondary-foreground/80">
+          Accès numérique immédiat · 3 bonus inclus · Aucun abonnement
+        </p>
 
         <div className="mx-auto mt-10 max-w-4xl overflow-hidden rounded-2xl border border-gold/30 shadow-soft">
-          <img src={hero} alt="Modèles imprimés et cartes de Noël brodées sur papier" width={1536} height={640} decoding="async" className="w-full" />
+          <img
+            src={hero}
+            alt="Gabarits imprimés, fils colorés et cartes de Noël brodées sur papier"
+            width={1536}
+            height={640}
+            decoding="async"
+            fetchPriority="high"
+            className="w-full"
+          />
         </div>
       </div>
     </section>
@@ -168,17 +221,31 @@ function Hero({ mode }: { mode: CampaignMode }) {
 }
 
 const problems = [
-  ["Des heures sur le téléphone", "Vous vouliez vous reposer. Vous vous sentez finalement plus vide qu'avant."],
-  ["Des loisirs jamais terminés", "Une écharpe inachevée, un livre en attente, la boîte d'aquarelle encore sous plastique."],
-  ["Des soirées qui se ressemblent", "Dîner, télé, téléphone, lit. On recommence. Six mois passent en un clin d'œil."],
-  ["Une déco sans âme", "Des objets achetés en magasin, qui pourraient être chez n'importe qui. Y compris chez vous."],
+  [
+    "Le défilement sans fin",
+    "Vous déposez le téléphone une heure plus tard, sans avoir vraiment soufflé.",
+  ],
+  [
+    "Les projets trop ambitieux",
+    "Le matériel s'accumule, mais le temps ou les explications manquent pour passer à l'action.",
+  ],
+  [
+    "Le manque de repères",
+    "Vous aimeriez essayer un ouvrage manuel sans devoir apprendre seule chaque technique.",
+  ],
+  [
+    "Les cadeaux impersonnels",
+    "Trouver une attention originale devient compliqué quand tout se ressemble en magasin.",
+  ],
 ];
 
 function Problems() {
   return (
     <section className="mx-auto max-w-5xl px-5 py-20 text-center">
-      <Eyebrow>Pourquoi commencer la broderie maintenant ?</Eyebrow>
-      <h2 className="reveal text-4xl font-bold md:text-5xl">Ce cycle vous semble familier ?</h2>
+      <Eyebrow>Une envie de faire autrement</Eyebrow>
+      <h2 className="reveal text-4xl font-bold md:text-5xl">
+        Vos envies créatives restent trop souvent en attente.
+      </h2>
       <div className="mt-12 grid gap-5 sm:grid-cols-2">
         {problems.map(([t, d]) => (
           <div key={t} className="reveal rounded-2xl border bg-card p-7 text-left">
@@ -188,17 +255,29 @@ function Problems() {
         ))}
       </div>
       <p className="reveal mt-12 font-display text-2xl text-primary">
-        Il existe une façon plus douce de vivre vos soirées.
+        Une aiguille, du fil et quelques minutes peuvent changer le rythme de votre soirée.
       </p>
     </section>
   );
 }
 
 const benefits = [
-  ["Peu coûteux pour commencer", "Une aiguille, trois couleurs de fil et une feuille imprimée. Le reste, vous l'avez sûrement déjà à la maison."],
-  ["Un calme qui s'installe", "Après quelques minutes, les mains trouvent leur rythme. Beaucoup y trouvent un vrai moment de pause, loin des écrans."],
-  ["Des gestes que l'écran ne vous apprend pas", "Concentration, patience, précision du geste, sens des couleurs."],
-  ["Un loisir qui peut aussi se vendre", "Marque-pages, petits tableaux, cartes personnalisées : si un jour vous souhaitez vendre vos créations, c'est possible."],
+  [
+    "Un matériel minimal",
+    "Une feuille, une aiguille et quelques fils suffisent pour préparer votre premier ouvrage.",
+  ],
+  [
+    "Une pause qui se savoure",
+    "Les gestes se répètent doucement et vous offrent une occupation manuelle loin des notifications.",
+  ],
+  [
+    "Des progrès visibles",
+    "Les perforations indiquent le chemin : vous avancez point par point, avec un résultat qui se dessine rapidement.",
+  ],
+  [
+    "Des pièces à votre nom",
+    "Cartes, marque-pages ou petits tableaux deviennent des attentions uniques, que vous pouvez aussi proposer à la vente.",
+  ],
 ];
 
 function Why() {
@@ -206,10 +285,13 @@ function Why() {
     <section className="bg-muted py-20">
       <div className="mx-auto max-w-5xl px-5">
         <div className="text-center">
-          <Eyebrow>Pourquoi choisir la broderie sur papier ?</Eyebrow>
-          <h2 className="reveal text-4xl font-bold md:text-5xl">Un art presque oublié, quatre bienfaits à la fois.</h2>
+          <Eyebrow>Le plaisir du fait main, sans atelier compliqué</Eyebrow>
+          <h2 className="reveal text-4xl font-bold md:text-5xl">
+            Un loisir simple à installer et agréable à pratiquer.
+          </h2>
           <p className="mx-auto mt-5 max-w-2xl text-muted-foreground">
-            La broderie sur papier est accessible, peu coûteuse et apaisante : une activité créative idéale pour ralentir pendant les fêtes.
+            Pas de tambour ni de tissu à tendre : le papier imprimé sert de support et de guide pour
+            vous laisser apprécier le geste.
           </p>
         </div>
         <div className="mt-12 grid gap-5 md:grid-cols-2">
@@ -231,28 +313,39 @@ function Why() {
 const profiles = [
   {
     tab: "Pour se détendre",
-    kicker: "Pour celles qui ont besoin de ralentir",
-    title: "Une fatigue que le sommeil ne suffit pas à effacer.",
-    text: "Vous cherchez une activité douce pour occuper vos mains, qui ne soit pas une corvée de plus. Quelques minutes par soir, sans écran ni application.",
-    points: ["Un rituel du soir pour souffler.", "De jolies pièces dont vous serez fière pour décorer votre intérieur."],
+    kicker: "Un rituel pour ralentir",
+    title: "Occupez vos mains, laissez la journée s'éloigner.",
+    text: "Installez-vous avec une tasse de thé et avancez sans chrono. Le gabarit vous aide à rester concentrée sur le plaisir de faire.",
+    points: [
+      "Une occupation douce, sans écran ni application.",
+      "Un ouvrage personnel à encadrer ou à offrir.",
+    ],
     img: pCalme,
     alt: "Mains brodant des fleurs sur papier près d'une bougie",
   },
   {
     tab: "Pour offrir",
-    kicker: "Pour celles qui aiment offrir",
-    title: "Des cadeaux de Noël qui ont du sens.",
-    text: "Des cartes de vœux qu'on garde, des étiquettes cadeaux uniques, des décorations que toute la famille remarque sous le sapin.",
-    points: ["200 modèles pour toutes les occasions.", "Des idées rapides pour les cadeaux de dernière minute.", "Une touche personnelle qu'aucune carte du commerce n'offre."],
+    kicker: "Une attention qui ne ressemble à aucune autre",
+    title: "Glissez un morceau de vous dans chaque paquet.",
+    text: "Associez les couleurs, choisissez un motif et fabriquez une carte ou une étiquette qui raconte quelque chose de votre lien.",
+    points: [
+      "Des thèmes variés pour les fêtes et le quotidien.",
+      "Des petits formats adaptés aux envies de dernière minute.",
+      "Une finition personnelle impossible à confondre avec une carte du commerce.",
+    ],
     img: pCadeaux,
     alt: "Paquet cadeau avec carte brodée d'une couronne de Noël",
   },
   {
     tab: "Pour un revenu",
-    kicker: "Pour celles qui veulent un complément",
-    title: "Transformer une passion en petite activité.",
-    text: "Créer de belles pièces à votre rythme, depuis chez vous. En cadeau, un guide pratique pour présenter, fixer vos prix et proposer vos créations.",
-    points: ["Un guide de tarification pour estimer un prix juste.", "Des modèles de publications pour présenter vos créations.", "Un mini-guide photo pour mettre vos pièces en valeur."],
+    kicker: "Des outils pour présenter vos ouvrages",
+    title: "Préparez vos premières pièces à proposer.",
+    text: "Travaillez à votre rythme, puis utilisez les ressources incluses pour organiser vos prix et soigner votre présentation.",
+    points: [
+      "Une méthode pour additionner matériel et temps de travail.",
+      "Des trames de publications pour expliquer votre démarche.",
+      "Des conseils photo simples, réalisables avec un smartphone.",
+    ],
     img: pRevenu,
     alt: "Marque-pages brodés emballés sur une table de marché",
   },
@@ -264,10 +357,13 @@ function Profiles() {
   return (
     <section className="mx-auto max-w-5xl px-5 py-20">
       <div className="text-center">
-        <Eyebrow>Qui se lance dans la broderie sur papier ?</Eyebrow>
-        <h2 className="reveal text-4xl font-bold md:text-5xl">Trois profils de débutantes s'y retrouvent.</h2>
+        <Eyebrow>Une activité, plusieurs façons de l'apprivoiser</Eyebrow>
+        <h2 className="reveal text-4xl font-bold md:text-5xl">
+          Choisissez l'expérience qui vous ressemble.
+        </h2>
         <p className="mx-auto mt-5 max-w-2xl text-muted-foreground">
-          Pas besoin de savoir enfiler une aiguille ni de vous sentir « manuelle ». Trouvez simplement le profil qui vous ressemble.
+          Aucun niveau n'est requis : commencez par l'envie de vous détendre, d'offrir ou de
+          présenter vos propres ouvrages.
         </p>
       </div>
       <div className="mt-10 flex flex-wrap justify-center gap-2" role="tablist">
@@ -290,33 +386,60 @@ function Profiles() {
           <p className="mt-4 text-muted-foreground">{p.text}</p>
           <ul className="mt-6 space-y-3">
             {p.points.map((pt) => (
-              <li key={pt} className="flex gap-3"><span className="text-gold">✦</span>{pt}</li>
+              <li key={pt} className="flex gap-3">
+                <span className="text-gold">✦</span>
+                {pt}
+              </li>
             ))}
           </ul>
         </div>
-        <img src={p.img} alt={p.alt} width={896} height={1088} loading="lazy" decoding="async" className="w-full rounded-2xl shadow-soft" />
+        <img
+          src={p.img}
+          alt={p.alt}
+          width={896}
+          height={1088}
+          loading="lazy"
+          decoding="async"
+          className="w-full rounded-2xl shadow-soft"
+        />
       </div>
     </section>
   );
 }
 
 const steps = [
-  ["Imprimez", "Choisissez un modèle et imprimez-le sur du papier classique ou cartonné."],
-  ["Brodez", "Suivez le guide pas à pas. Une aiguille, du fil et un poinçon suffisent."],
-  ["Créez, offrez ou vendez", "Encadrez votre création, offrez-la ou vendez-la. Vous avancez à votre rythme."],
+  [
+    "Préparez la feuille",
+    "Sélectionnez un gabarit et imprimez-le sur du papier classique ou cartonné.",
+  ],
+  [
+    "Suivez les repères",
+    "Percez les points indiqués, puis enfilez le fil en suivant les explications illustrées.",
+  ],
+  [
+    "Finalisez votre ouvrage",
+    "Découpez, encadrez ou attachez votre pièce : le guide reste disponible pour les suivantes.",
+  ],
 ];
 
 function Steps() {
   return (
     <section className="bg-forest-gradient py-16 text-secondary-foreground md:py-20">
       <div className="mx-auto max-w-6xl px-5 text-center">
-        <Eyebrow light>Plus simple qu'il n'y paraît</Eyebrow>
-        <h2 className="text-4xl font-bold md:text-5xl">Trois étapes. Votre première création.</h2>
-        <p className="mx-auto mt-4 max-w-2xl text-lg text-secondary-foreground/85">Pas besoin d'expérience : le modèle vous guide à chaque geste.</p>
+        <Eyebrow light>Du premier trou au dernier point</Eyebrow>
+        <h2 className="text-4xl font-bold md:text-5xl">Imprimez, percez, brodez.</h2>
+        <p className="mx-auto mt-4 max-w-2xl text-lg text-secondary-foreground/85">
+          Chaque étape est expliquée pour vous permettre d'apprendre en réalisant.
+        </p>
         <div className="mt-10 grid gap-5 md:grid-cols-3">
           {steps.map(([t, d], i) => (
-            <div key={t} className="reveal stitch-border rounded-2xl bg-forest-deep/25 p-6 text-left">
-              <span className="flex h-12 w-12 items-center justify-center rounded-full bg-gold-gradient font-display text-2xl font-extrabold text-accent-foreground">{i + 1}</span>
+            <div
+              key={t}
+              className="reveal stitch-border rounded-2xl bg-forest-deep/25 p-6 text-left"
+            >
+              <span className="flex h-12 w-12 items-center justify-center rounded-full bg-gold-gradient font-display text-2xl font-extrabold text-accent-foreground">
+                {i + 1}
+              </span>
               <h3 className="mt-5 text-2xl font-bold">{t}</h3>
               <p className="mt-3 leading-relaxed text-secondary-foreground/85">{d}</p>
             </div>
@@ -326,19 +449,39 @@ function Steps() {
         <div className="mt-14 grid items-center gap-10 md:grid-cols-[0.85fr_1.15fr]">
           <div className="mx-auto w-full max-w-sm">
             <DemonstrationVideo />
-            <p className="mt-3 text-sm font-bold text-gold">Regardez le geste, puis essayez à votre rythme.</p>
+            <p className="mt-3 text-sm font-bold text-gold">
+              Observez le mouvement avant de prendre l'aiguille.
+            </p>
           </div>
           <div className="text-center md:text-left">
-            <Eyebrow light>Du papier à une pièce unique</Eyebrow>
-            <h3 className="text-3xl font-bold md:text-4xl">Un modèle imprimé. Une création dont vous serez fière.</h3>
-            <p className="mt-4 text-secondary-foreground/85">Les repères vous indiquent où percer et où passer le fil. Vous voyez votre ouvrage prendre forme, point après point.</p>
+            <Eyebrow light>Des indications concrètes</Eyebrow>
+            <h3 className="text-3xl font-bold md:text-4xl">
+              Vous savez toujours où placer le prochain point.
+            </h3>
+            <p className="mt-4 text-secondary-foreground/85">
+              Le support indique les perforations et le passage du fil. Le motif apparaît
+              progressivement, sans transfert complexe.
+            </p>
             <figure className="mt-6">
-              <img src={avantApres} alt="Avant / après : modèle imprimé et broderie terminée" width={1280} height={720} loading="lazy" decoding="async" className="w-full rounded-2xl border border-gold/20" />
-              <figcaption className="reveal mt-3 flex justify-between gap-4 text-sm text-secondary-foreground/80"><span>Avant : le modèle</span><span>Après : votre broderie</span></figcaption>
+              <img
+                src={avantApres}
+                alt="Avant / après : modèle imprimé et broderie terminée"
+                width={1280}
+                height={720}
+                loading="lazy"
+                decoding="async"
+                className="w-full rounded-2xl border border-gold/20"
+              />
+              <figcaption className="reveal mt-3 flex justify-between gap-4 text-sm text-secondary-foreground/80">
+                <span>Avant : le modèle</span>
+                <span>Après : votre broderie</span>
+              </figcaption>
             </figure>
           </div>
         </div>
-        <div className="mt-10"><Cta variant="gold">Je crée ma première broderie →</Cta></div>
+        <div className="mt-10">
+          <Cta variant="gold">Je crée ma première broderie →</Cta>
+        </div>
       </div>
     </section>
   );
@@ -358,15 +501,22 @@ function Gallery() {
   return (
     <section className="mx-auto max-w-5xl px-5 py-20">
       <div className="text-center">
-        <Eyebrow>Ce que vous pourrez créer</Eyebrow>
-        <h2 className="reveal text-4xl font-bold md:text-5xl">Du marque-page au souvenir de famille.</h2>
+        <Eyebrow>Un coffret pour varier les projets</Eyebrow>
+        <h2 className="reveal text-4xl font-bold md:text-5xl">
+          Passez d'une carte délicate à un tableau floral.
+        </h2>
         <p className="mx-auto mt-5 max-w-2xl text-muted-foreground">
-          Le coffret réunit 200 modèles classés par catégorie : cartes de Noël brodées, étiquettes cadeaux, cartes de vœux, marque-pages, décorations, petits tableaux floraux et cadeaux personnalisés. Photos d'inspiration.
+          Explorez les catégories selon votre envie : vœux, étiquettes, marque-pages ou ornements.
+          Les photographies donnent un aperçu des possibilités.
         </p>
       </div>
       <div className="mt-8 flex flex-wrap justify-center gap-2">
         {cats.map((c) => (
-          <button key={c} onClick={() => setCat(c)} className={`rounded-full px-5 py-2 text-sm font-bold transition ${c === cat ? "bg-primary text-primary-foreground" : "bg-muted hover:bg-border"}`}>
+          <button
+            key={c}
+            onClick={() => setCat(c)}
+            className={`rounded-full px-5 py-2 text-sm font-bold transition ${c === cat ? "bg-primary text-primary-foreground" : "bg-muted hover:bg-border"}`}
+          >
             {c}
           </button>
         ))}
@@ -374,7 +524,15 @@ function Gallery() {
       <div className="mt-10 grid gap-6 sm:grid-cols-2">
         {items.map((g) => (
           <figure key={g.title} className="overflow-hidden rounded-2xl bg-card shadow-soft">
-            <img src={g.img} alt={g.title} width={832} height={832} loading="lazy" decoding="async" className="aspect-square w-full object-cover transition duration-500 hover:scale-105" />
+            <img
+              src={g.img}
+              alt={g.title}
+              width={832}
+              height={832}
+              loading="lazy"
+              decoding="async"
+              className="aspect-square w-full object-cover transition duration-500 hover:scale-105"
+            />
             <figcaption className="p-5">
               <span className="eyebrow text-primary">{g.cat}</span>
               <h3 className="mt-1 text-2xl font-bold">{g.title}</h3>
@@ -387,9 +545,30 @@ function Gallery() {
 }
 
 const bonuses = [
-  { n: "Cadeau Nº 1", kicker: "Du papier à la vente", title: "Guide de vos premières ventes", text: "Un guide pratique pour présenter, tarifer et proposer vos créations faites main : plan d'action, check-lists et exemples de publications.", img: bonusGuideVentes, alt: "Guide de vente et cartes de broderie sur papier" },
-  { n: "Cadeau Nº 2", kicker: "Fixez vos prix sereinement", title: "Kit de calcul des prix", text: "Une calculatrice simple pour estimer le coût du matériel, le temps de réalisation et la marge souhaitée. Avec le Carnet de l'artisane.", img: bonusCalculPrix, alt: "Tablette, calculatrice et matériel pour calculer le prix des créations" },
-  { n: "Cadeau Nº 3", kicker: "Photographiez. Présentez. Partagez.", title: "Kit Vitrine de l'Atelier", text: "Conseils photo en lumière naturelle, modèles de présentation produit et exemples de messages pour parler de vos créations.", img: bonusVitrineAtelier, alt: "Smartphone photographiant des cartes brodées pour le kit vitrine" },
+  {
+    n: "Cadeau Nº 1",
+    kicker: "Organisez votre démarche",
+    title: "Guide de vos premières ventes",
+    text: "Un plan d'action, des check-lists et des exemples de publications pour présenter vos ouvrages avec méthode.",
+    img: bonusGuideVentes,
+    alt: "Guide de vente et cartes de broderie sur papier",
+  },
+  {
+    n: "Cadeau Nº 2",
+    kicker: "Additionnez les bons éléments",
+    title: "Kit de calcul des prix",
+    text: "Estimez le matériel, le temps passé et la marge souhaitée avec une calculatrice et le Carnet de l'artisane.",
+    img: bonusCalculPrix,
+    alt: "Tablette, calculatrice et matériel pour calculer le prix des créations",
+  },
+  {
+    n: "Cadeau Nº 3",
+    kicker: "Soignez votre présentation",
+    title: "Kit Vitrine de l'Atelier",
+    text: "Profitez de conseils photo, de trames de fiches produit et de messages pour montrer le détail de votre travail.",
+    img: bonusVitrineAtelier,
+    alt: "Smartphone photographiant des cartes brodées pour le kit vitrine",
+  },
 ];
 
 function Bonuses() {
@@ -397,26 +576,45 @@ function Bonuses() {
     <section className="bg-muted py-20">
       <div className="mx-auto max-w-5xl px-5">
         <div className="text-center">
-          <Eyebrow>🎁 Trois cadeaux à déballer avec votre coffret</Eyebrow>
-          <h2 className="reveal text-4xl font-bold md:text-5xl">Trois bonus inclus, sans supplément.</h2>
+          <Eyebrow>🎁 Des ressources pour aller plus loin</Eyebrow>
+          <h2 className="reveal text-4xl font-bold md:text-5xl">
+            Vos trois bonus sont déjà inclus.
+          </h2>
         </div>
         <div className="mt-12 grid gap-6 md:grid-cols-3">
           {bonuses.map((b, i) => (
-            <article key={b.title} className="group relative overflow-hidden rounded-2xl bg-card shadow-soft">
+            <article
+              key={b.title}
+              className="group relative overflow-hidden rounded-2xl bg-card shadow-soft"
+            >
               <div className="relative aspect-[4/3] overflow-hidden bg-forest-gradient">
-                <img src={b.img} alt={b.alt} width={1448} height={1086} loading="lazy" decoding="async" className="h-full w-full object-cover transition duration-500 group-hover:scale-105" />
-                <span className="absolute left-4 top-4 rounded-full bg-gold-gradient px-4 py-1.5 text-sm font-bold text-accent-foreground shadow-soft">{b.n}</span>
+                <img
+                  src={b.img}
+                  alt={b.alt}
+                  width={1448}
+                  height={1086}
+                  loading="lazy"
+                  decoding="async"
+                  className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
+                />
+                <span className="absolute left-4 top-4 rounded-full bg-gold-gradient px-4 py-1.5 text-sm font-bold text-accent-foreground shadow-soft">
+                  {b.n}
+                </span>
               </div>
               <div className="reveal p-6">
                 <p className="eyebrow text-primary">{b.kicker}</p>
                 <h3 className="mt-2 text-2xl font-bold">{b.title}</h3>
                 <p className="mt-3 text-sm text-muted-foreground">{b.text}</p>
-                <p className="mt-4 text-sm font-bold text-secondary">✓ Inclus · valeur indicative {euro(campaign.bonusValues[i] ?? 0)}</p>
+                <p className="mt-4 text-sm font-bold text-secondary">
+                  ✓ Inclus · valeur indicative {euro(campaign.bonusValues[i] ?? 0)}
+                </p>
               </div>
             </article>
           ))}
         </div>
-        <p className="mt-6 text-center text-xs text-muted-foreground">Aucun revenu ni aucune vente n'est garanti : les résultats dépendent de chacune.</p>
+        <p className="mt-6 text-center text-xs text-muted-foreground">
+          Aucun revenu ni aucune vente n'est garanti : les résultats dépendent de chacune.
+        </p>
       </div>
     </section>
   );
@@ -432,13 +630,27 @@ const included = [
 
 function Offer({ mode }: { mode: CampaignMode }) {
   return (
-    <section id="offre" className="relative overflow-hidden bg-forest-gradient py-16 text-secondary-foreground md:py-20">
+    <section
+      id="offre"
+      className="relative overflow-hidden bg-forest-gradient py-16 text-secondary-foreground md:py-20"
+    >
       {mode !== "evergreen" && <Snow />}
       <div className="relative mx-auto max-w-2xl px-5">
         <div className="text-center">
-          <Eyebrow light>{mode === "blackfriday" ? "Black Friday Week · Offre Essentielle" : mode === "noel" ? "Offre de Noël" : "Offre Essentielle"}</Eyebrow>
-          <h2 className="text-4xl font-bold md:text-5xl">Tout pour créer dès aujourd'hui.</h2>
-          <p className="mt-3 text-lg text-secondary-foreground/85">200 modèles, le guide et 3 cadeaux. Un seul paiement.</p>
+          <Eyebrow light>
+            {mode === "blackfriday"
+              ? "Black Friday Week · Offre Essentielle"
+              : mode === "noel"
+                ? "Offre de Noël"
+                : "Offre Essentielle"}
+          </Eyebrow>
+          <h2 className="text-4xl font-bold md:text-5xl">
+            Votre coffret numérique, prêt à imprimer.
+          </h2>
+          <p className="mt-3 text-lg text-secondary-foreground/85">
+            Les 200 gabarits, les explications et les trois ressources offertes, réunis dans un seul
+            paiement.
+          </p>
         </div>
         <div className="mt-9 rounded-3xl border border-gold/30 bg-card p-5 text-card-foreground shadow-soft md:p-8">
           {mode !== "evergreen" && (
@@ -447,27 +659,44 @@ function Offer({ mode }: { mode: CampaignMode }) {
             </div>
           )}
           <ul className="space-y-3 text-left font-medium">
-            {included.map((x) => <li key={x} className="border-b border-border pb-3 leading-relaxed last:border-0">{x}</li>)}
+            {included.map((x) => (
+              <li key={x} className="border-b border-border pb-3 leading-relaxed last:border-0">
+                {x}
+              </li>
+            ))}
           </ul>
 
           <div className="mt-7 rounded-3xl border-2 border-gold/70 bg-gold-gradient p-6 text-center text-accent-foreground md:p-8">
             {campaign.showReferencePrice && mode !== "evergreen" ? (
               <>
                 <span className="inline-flex rounded-full bg-primary px-4 py-1.5 text-sm font-extrabold uppercase tracking-wide text-primary-foreground">
-                  {mode === "blackfriday" ? "Black Friday Week" : "Offre de Noël"} · −{discountPct()} %
+                  {mode === "blackfriday" ? "Black Friday Week" : "Offre de Noël"} · −
+                  {discountPct()} %
                 </span>
-                <p className="mt-4 text-base font-bold">Au lieu de <s>{euro(campaign.referencePrice)}</s></p>
+                <p className="mt-4 text-base font-bold">
+                  Au lieu de <s>{euro(campaign.referencePrice)}</s>
+                </p>
               </>
             ) : (
-              <span className="inline-flex rounded-full bg-secondary px-4 py-1.5 text-sm font-bold text-secondary-foreground">Offre Essentielle</span>
+              <span className="inline-flex rounded-full bg-secondary px-4 py-1.5 text-sm font-bold text-secondary-foreground">
+                Offre Essentielle
+              </span>
             )}
-            <p className="mt-2 font-display text-7xl font-black leading-none tracking-tight text-primary md:text-8xl">{price}</p>
+            <p className="mt-2 font-display text-7xl font-black leading-none tracking-tight text-primary md:text-8xl">
+              {price}
+            </p>
             <p className="mt-3 font-bold">Paiement unique · sans abonnement</p>
-            <div className="mt-6"><Cta>Oui, je veux mes 200 modèles pour {price}</Cta></div>
-            <p className="mt-4 text-xs font-medium opacity-80">Accès immédiat par e-mail · Produit 100 % numérique · Aucun envoi physique</p>
+            <div className="mt-6">
+              <Cta>Oui, je veux mes 200 modèles pour {price}</Cta>
+            </div>
+            <p className="mt-4 text-xs font-medium opacity-80">
+              Accès immédiat par e-mail · Produit 100 % numérique · Aucun envoi physique
+            </p>
           </div>
           {campaign.showReferencePrice && mode !== "evergreen" && (
-            <p className="mt-3 text-center text-[11px] leading-relaxed text-muted-foreground">{campaign.referencePriceNote}</p>
+            <p className="mt-3 text-center text-[11px] leading-relaxed text-muted-foreground">
+              {campaign.referencePriceNote}
+            </p>
           )}
         </div>
       </div>
@@ -498,13 +727,27 @@ function CreativeExamples() {
     <section className="bg-muted py-20">
       <div className="mx-auto max-w-6xl px-5 text-center">
         <Eyebrow>Quelques idées</Eyebrow>
-        <h2 className="text-4xl font-bold md:text-5xl">À vous de créer.</h2>
-        <p className="mx-auto mt-5 max-w-2xl text-muted-foreground">Des exemples de cartes, d'étiquettes et de motifs à réaliser avec les modèles BordaPapel.</p>
+        <h2 className="text-4xl font-bold md:text-5xl">Imaginez votre prochain ouvrage.</h2>
+        <p className="mx-auto mt-5 max-w-2xl text-muted-foreground">
+          Trois exemples de supports à personnaliser avec les gabarits BordaPapel, vos couleurs et
+          votre rythme.
+        </p>
         <div className="mt-10 grid gap-6 text-left md:grid-cols-3">
           {creativeExamples.map((example) => (
-            <article key={example.title} className="overflow-hidden rounded-3xl bg-card shadow-soft">
+            <article
+              key={example.title}
+              className="overflow-hidden rounded-3xl bg-card shadow-soft"
+            >
               <div className="aspect-[3/4] overflow-hidden bg-secondary">
-                <img src={example.img} alt={example.alt} width={640} height={960} loading="lazy" decoding="async" className="h-full w-full object-cover" />
+                <img
+                  src={example.img}
+                  alt={example.alt}
+                  width={640}
+                  height={960}
+                  loading="lazy"
+                  decoding="async"
+                  className="h-full w-full object-cover"
+                />
               </div>
               <div className="p-6">
                 <h3 className="text-2xl font-bold">{example.title}</h3>
@@ -522,7 +765,9 @@ function ReviewStars({ rating }: { rating: 1 | 2 | 3 | 4 | 5 }) {
     <div className="mb-4 flex gap-1 text-xl" aria-label={`Note : ${rating} sur 5 étoiles`}>
       <span aria-hidden className="contents">
         {Array.from({ length: 5 }, (_, index) => (
-          <span key={index} className={index < rating ? "text-gold" : "text-border"}>★</span>
+          <span key={index} className={index < rating ? "text-gold" : "text-border"}>
+            ★
+          </span>
         ))}
       </span>
     </div>
@@ -540,7 +785,9 @@ function Testimonials() {
           <blockquote key={t.name} className="rounded-2xl bg-card p-6 text-left shadow-soft">
             <ReviewStars rating={t.rating} />
             <p className="italic">« {t.text} »</p>
-            <footer className="mt-4 text-sm font-bold">{t.name} · {t.city}</footer>
+            <footer className="mt-4 text-sm font-bold">
+              {t.name} · {t.city}
+            </footer>
           </blockquote>
         ))}
       </div>
@@ -554,16 +801,30 @@ function Guarantee() {
       <div className="stitch-border grid items-center gap-8 rounded-3xl bg-card p-6 text-center md:grid-cols-[280px_1fr] md:p-10 md:text-left">
         <div className="relative mx-auto w-full max-w-64">
           <div className="absolute inset-8 rounded-full bg-gold/20 blur-2xl" aria-hidden />
-          <img src={guaranteeSeal} alt="Sceau brodé : garantie de 30 jours" width={640} height={640} loading="lazy" decoding="async" className="relative h-auto w-full" />
+          <img
+            src={guaranteeSeal}
+            alt="Sceau brodé : garantie de 30 jours"
+            width={640}
+            height={640}
+            loading="lazy"
+            decoding="async"
+            className="relative h-auto w-full"
+          />
         </div>
         <div className="reveal">
-          <Eyebrow>Une garantie simple</Eyebrow>
-          <h2 className="text-4xl font-bold md:text-5xl">{campaign.guaranteeDays} jours satisfaite ou remboursée.</h2>
+          <Eyebrow>Prenez le temps d'essayer</Eyebrow>
+          <h2 className="text-4xl font-bold md:text-5xl">
+            {campaign.guaranteeDays} jours pour faire votre choix.
+          </h2>
           <p className="mt-5 leading-relaxed text-muted-foreground">
-            Essayez le coffret complet : imprimez les modèles et réalisez vos premières broderies. Si la broderie sur papier ne vous plaît pas, envoyez-nous simplement un e-mail dans les {campaign.guaranteeDays} jours suivant l'achat et nous vous rembourserons intégralement, selon nos conditions de remboursement.
+            Ouvrez les fichiers, imprimez un gabarit et essayez la méthode. Si elle ne vous convient
+            pas, écrivez-nous dans les {campaign.guaranteeDays} jours suivant l'achat : vous serez
+            intégralement remboursée selon nos conditions.
           </p>
           <div className="mt-6 flex flex-wrap justify-center gap-3 text-sm font-bold text-secondary md:justify-start">
-            <span className="rounded-full bg-muted px-4 py-2">✓ {campaign.guaranteeDays} jours pour essayer</span>
+            <span className="rounded-full bg-muted px-4 py-2">
+              ✓ {campaign.guaranteeDays} jours pour essayer
+            </span>
             <span className="rounded-full bg-muted px-4 py-2">✓ Une simple demande par e-mail</span>
           </div>
         </div>
@@ -573,13 +834,34 @@ function Guarantee() {
 }
 
 const faqs: [string, string][] = [
-  ["Je n'ai jamais brodé. Vais-je y arriver ?", "Oui. Le guide reprend tout depuis le début : enfiler l'aiguille, faire les nœuds et les quelques points de base utilisés dans tous les modèles. Les trous à percer servent de repère, ce qui rend la broderie sur papier très accessible."],
-  ["Que dois-je acheter pour commencer ?", "Une aiguille, quelques fils à broder, du papier (classique ou cartonné) et un outil pour percer, comme un poinçon ou une punaise. Tout se trouve facilement en mercerie ou en ligne, et la liste complète est fournie."],
-  ["Quelle différence avec la broderie sur tissu ?", "Sur papier, les trous sont déjà indiqués sur le modèle imprimé : pas de tambour, pas de tissu à tendre, pas de motif à transférer. C'est plus simple pour débuter, et tout aussi joli."],
-  ["Est-ce que je reçois quelque chose par la poste ?", "Non, BordaPapel est un produit 100 % numérique. Vous recevez l'accès par e-mail juste après l'achat et vous imprimez les modèles chez vous, autant de fois que vous le souhaitez pour un usage personnel."],
-  ["Puis-je vendre mes créations ?", "Vous pouvez vendre les pièces que vous brodez vous-même. Les guides offerts vous aident à les présenter et à fixer vos prix, sans garantie de résultat."],
-  ["Combien de temps ai-je accès ?", "Vous payez une seule fois, sans abonnement, et conservez vos fichiers téléchargés."],
-  ["Et si ce n'est pas pour moi ?", `Écrivez-nous dans les ${campaign.guaranteeDays} jours suivant l'achat et nous vous rembourserons intégralement, selon nos conditions de remboursement.`],
+  [
+    "Faut-il déjà savoir broder ?",
+    "Non. Le guide explique la préparation de l'aiguille, les nœuds et les points utilisés. Les perforations du gabarit vous donnent un chemin précis à suivre.",
+  ],
+  [
+    "Quel matériel faut-il prévoir ?",
+    "Prévoyez une aiguille, du fil, du papier classique ou cartonné et un poinçon ou une punaise. La liste détaillée accompagne les fichiers.",
+  ],
+  [
+    "Pourquoi utiliser du papier plutôt que du tissu ?",
+    "Le support imprimé remplace le transfert du motif et ne demande ni tambour ni tissu tendu. Vous percez aux endroits indiqués avant de passer le fil.",
+  ],
+  [
+    "Vais-je recevoir un colis ?",
+    "Non. BordaPapel est entièrement numérique : l'accès arrive par e-mail après l'achat et vous imprimez les gabarits chez vous pour votre usage personnel.",
+  ],
+  [
+    "Puis-je commercialiser les pièces réalisées ?",
+    "Vous pouvez vendre les ouvrages fabriqués par vos soins. Les bonus vous aident à les présenter et à calculer vos prix, sans promesse de résultat.",
+  ],
+  [
+    "L'achat entraîne-t-il un abonnement ?",
+    "Non. Vous réglez une seule fois et conservez les fichiers que vous avez téléchargés.",
+  ],
+  [
+    "Comment fonctionne le remboursement ?",
+    `Contactez-nous dans les ${campaign.guaranteeDays} jours suivant l'achat. Le remboursement intégral s'applique selon nos conditions.`,
+  ],
 ];
 
 function Faq() {
@@ -611,19 +893,24 @@ function Closing({ mode }: { mode: CampaignMode }) {
         <Eyebrow light>Une dernière chose</Eyebrow>
         <h2 className="text-4xl font-bold leading-tight md:text-5xl">
           {mode === "evergreen" ? (
-            "Ce soir, au lieu de faire défiler votre écran, brodez."
+            "Votre prochaine soirée créative peut commencer avec une simple feuille."
           ) : (
             <>
-              Ce Noël, offrez plus qu'un cadeau. Offrez quelque chose créé{" "}
-              <span className="whitespace-nowrap">avec le cœur.</span>
+              Cette année, glissez un peu de vous{" "}
+              <span className="whitespace-nowrap">dans chaque paquet.</span>
             </>
           )}
         </h2>
         <p className="mx-auto mt-6 max-w-2xl opacity-90">
-          Imaginez la joie d'offrir une carte, une décoration ou un petit souvenir que vous avez réalisé vous-même. Avec 200 modèles prêts à imprimer, votre prochaine création commence aujourd'hui.
+          Choisissez un motif, préparez vos fils et profitez de la satisfaction de fabriquer quelque
+          chose d'unique. Le coffret vous accompagne de la première impression à la finition.
         </p>
-        <p className="mt-4 font-display text-xl text-gold">Et gardez-en un peu pour vous : le plaisir de créer est aussi un cadeau.</p>
-        <div className="mt-10"><Cta variant="gold">Je commence mes créations de Noël →</Cta></div>
+        <p className="mt-4 font-display text-xl text-gold">
+          Un temps pour vous, une attention pour celles et ceux que vous aimez.
+        </p>
+        <div className="mt-10">
+          <Cta variant="gold">Je commence mes créations de Noël →</Cta>
+        </div>
       </div>
     </section>
   );
@@ -637,7 +924,14 @@ function StickyCta() {
         <p className="text-xs opacity-75">Coffret 200 modèles</p>
         <p className="font-display text-2xl font-bold text-gold">{price}</p>
       </div>
-      <button type="button" data-purchase-cta onClick={openUpsell} className="rounded-full bg-primary px-5 py-3 text-sm font-bold text-primary-foreground">J'en profite →</button>
+      <button
+        type="button"
+        data-purchase-cta
+        onClick={openUpsell}
+        className="rounded-full bg-primary px-5 py-3 text-sm font-bold text-primary-foreground"
+      >
+        J'en profite →
+      </button>
     </div>
   );
 }
@@ -645,6 +939,7 @@ function StickyCta() {
 export function Landing() {
   const mode = useMode();
   useReveal();
+  useImageDownloadDeterrent();
   return (
     <UpsellProvider>
       <main className="pb-20 md:pb-0">

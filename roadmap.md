@@ -1,5 +1,9 @@
 # Tarefas
 
+- [x] Dificultar clique direito, arraste e toque prolongado nas imagens, sem prometer proteção absoluta.
+- [x] Reescrever a copy para reduzir repetições e inconsistências, sem alterar oferta ou identidade visual.
+- [x] Completar canonical, og:url, dados estruturados e hierarquia/semântica da página.
+- [x] Reduzir o custo inicial do popup e auditar scripts, rastreamento, desempenho e elementos quebrados.
 - [x] Remover as badges da galeria e eliminar os espaços brancos causados por títulos ocultos; não inventar feedbacks ou estrelas.
 - [x] Remover nomes e relatos fictícios; apresentar as cenas somente como exemplos de criação, nunca como avaliações reais.
 - [x] Refazer as cenas em primeira pessoa com acabamento caseiro, sem apresentá-las como avaliações reais.
