@@ -1,5 +1,9 @@
 # Tarefas
 
+- [x] Adicionar aviso discreto de independência em relação à Meta no rodapé.
+- [ ] Instalar o Pixel oficial após receber o ID e a escolha de consentimento.
+- [ ] Configurar consentimento e privacidade conforme a rota escolhida.
+- [ ] Verificar transmissão no navegador e recebimento no Meta Events Manager quando possível.
 - [x] Dificultar clique direito, arraste e toque prolongado nas imagens, sem prometer proteção absoluta.
 - [x] Reescrever a copy para reduzir repetições e inconsistências, sem alterar oferta ou identidade visual.
 - [x] Completar canonical, og:url, dados estruturados e hierarquia/semântica da página.

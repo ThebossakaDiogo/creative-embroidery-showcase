@@ -956,8 +956,11 @@ export function Landing() {
         <Guarantee />
         <Faq />
         <Closing mode={mode} />
-        <footer className="bg-forest-deep py-8 text-center text-xs text-secondary-foreground/70">
-          © 2026 BordaPapel · Produit numérique · Photos d'inspiration non contractuelles
+        <footer className="bg-forest-deep px-5 py-8 text-center text-xs text-secondary-foreground/70">
+          <p>© 2026 BordaPapel · Produit numérique · Photos d'inspiration non contractuelles</p>
+          <p className="mx-auto mt-3 max-w-3xl text-[11px] leading-relaxed">
+            Ce site est indépendant et n'est pas affilié à Meta Platforms, Inc. Il n'est ni sponsorisé, ni administré, ni approuvé par Meta. Meta, Facebook et Instagram sont des marques déposées de Meta Platforms, Inc.
+          </p>
         </footer>
         <StickyCta />
       </main>
