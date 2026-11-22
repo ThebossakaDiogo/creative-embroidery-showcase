@@ -28,3 +28,5 @@ use the editor.
   own key and store it in Secrets.
 - **Secrets.** Lovable manages them. Do not put secret values in the repo.
 <!-- LOVABLE:END -->
+
+- Campaign prices, dates, checkout link, modes and testimonials live only in src/config/campaign.ts — so seasonal changes never require editing page sections.
