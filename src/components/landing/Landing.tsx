@@ -475,49 +475,40 @@ function Offer({ mode }: { mode: CampaignMode }) {
   );
 }
 
-const creativeStories = [
+const creativeExamples = [
   {
-    name: "Claire",
-    theme: "Le rituel du soir",
-    text: "Elle réserve dix minutes après le dîner pour choisir ses fils, suivre les repères et regarder un motif botanique prendre forme, loin des écrans.",
+    title: "Un motif botanique",
     img: portraitClaire,
-    alt: "Vue subjective illustrative de mains brodant un motif botanique sur papier",
+    alt: "Mains brodant un motif botanique sur papier",
   },
   {
-    name: "Nadia",
-    theme: "Des cadeaux personnels",
-    text: "Elle imagine des étiquettes assorties à chaque paquet et la surprise de ses proches devant un cadeau préparé avec une attention vraiment personnelle.",
+    title: "Une étiquette à offrir",
     img: portraitNadia,
-    alt: "Vue subjective illustrative de mains préparant une étiquette cadeau brodée",
+    alt: "Mains préparant une étiquette cadeau brodée",
   },
   {
-    name: "Sophie",
-    theme: "Sa petite vitrine créative",
-    text: "Elle dispose ses cartes près de la fenêtre, règle son smartphone et compose une présentation soignée pour montrer ses créations.",
+    title: "Une collection de cartes",
     img: portraitSophie,
-    alt: "Vue subjective illustrative de mains disposant des cartes brodées sur une table",
+    alt: "Mains disposant des cartes brodées sur une table",
   },
 ];
 
-function CreativeStories() {
+function CreativeExamples() {
   return (
     <section className="bg-muted py-20">
       <div className="mx-auto max-w-6xl px-5 text-center">
-        <Eyebrow>Inspirez-vous</Eyebrow>
-        <h2 className="reveal text-4xl font-bold md:text-5xl">Et si votre prochain moment créatif commençait ici ?</h2>
-        <p className="mx-auto mt-5 max-w-2xl text-muted-foreground">Trois scénarios pour vous aider à imaginer comment BordaPapel peut trouver sa place dans votre quotidien.</p>
-        <p className="mx-auto mt-5 inline-flex rounded-full border border-primary/20 bg-card px-4 py-2 text-xs font-bold text-primary">Portraits et scénarios illustratifs · ne sont pas des avis de clientes.</p>
+        <Eyebrow>Quelques idées</Eyebrow>
+        <h2 className="reveal text-4xl font-bold md:text-5xl">À vous de créer.</h2>
+        <p className="mx-auto mt-5 max-w-2xl text-muted-foreground">Des exemples de cartes, d'étiquettes et de motifs à réaliser avec les modèles BordaPapel.</p>
         <div className="mt-10 grid gap-6 text-left md:grid-cols-3">
-          {creativeStories.map((story) => (
-            <article key={story.name} className="overflow-hidden rounded-3xl bg-card shadow-soft">
+          {creativeExamples.map((example) => (
+            <article key={example.title} className="overflow-hidden rounded-3xl bg-card shadow-soft">
               <div className="relative aspect-[3/4] overflow-hidden bg-secondary">
-                <img src={story.img} alt={story.alt} width={640} height={960} loading="lazy" decoding="async" className="h-full w-full object-cover" />
-                <span className="absolute left-3 top-3 rounded-full bg-background/90 px-3 py-1 text-[10px] font-extrabold uppercase tracking-widest text-primary shadow-soft">Scénario illustratif</span>
+                <img src={example.img} alt={example.alt} width={640} height={960} loading="lazy" decoding="async" className="h-full w-full object-cover" />
+                <span className="absolute left-3 top-3 rounded-full bg-background/90 px-3 py-1 text-[10px] font-extrabold uppercase tracking-widest text-primary shadow-soft">Exemple de création</span>
               </div>
               <div className="reveal p-6">
-                <p className="eyebrow text-primary">{story.theme}</p>
-                <h3 className="mt-2 text-3xl font-bold">{story.name}</h3>
-                <p className="mt-3 leading-relaxed text-muted-foreground">{story.text}</p>
+                <h3 className="text-2xl font-bold">{example.title}</h3>
               </div>
             </article>
           ))}
@@ -666,7 +657,7 @@ export function Landing() {
         <Profiles />
         <Bonuses />
         <Offer mode={mode} />
-        <CreativeStories />
+        <CreativeExamples />
         <Testimonials />
         <Guarantee />
         <Faq />
