@@ -121,7 +121,7 @@ function Hero({ mode }: { mode: CampaignMode }) {
             <>La broderie, le plus doux chemin vers un esprit apaisé.</>
           ) : (
             <>
-              Et si votre plus beau cadeau de Noël était <em className="text-gold">un moment de douceur</em> ?
+              Et si votre plus beau cadeau de Noël était <em className="text-gold">un moment de douceur</em>&nbsp;?
             </>
           )}
         </h1>
@@ -503,7 +503,14 @@ function Closing({ mode }: { mode: CampaignMode }) {
       <div className="relative mx-auto max-w-3xl px-5">
         <Eyebrow light>Une dernière chose</Eyebrow>
         <h2 className="text-4xl font-semibold leading-tight md:text-5xl">
-          {mode === "evergreen" ? "Ce soir, au lieu de faire défiler votre écran, brodez." : "Ce Noël, offrez plus qu'un cadeau. Offrez quelque chose créé avec le cœur."}
+          {mode === "evergreen" ? (
+            "Ce soir, au lieu de faire défiler votre écran, brodez."
+          ) : (
+            <>
+              Ce Noël, offrez plus qu'un cadeau. Offrez quelque chose créé{" "}
+              <span className="whitespace-nowrap">avec le cœur.</span>
+            </>
+          )}
         </h2>
         <p className="mx-auto mt-6 max-w-2xl opacity-90">
           Imaginez la joie d'offrir une carte, une décoration ou un petit souvenir que vous avez réalisé vous-même. Avec 200 modèles prêts à imprimer, votre prochaine création commence aujourd'hui.
