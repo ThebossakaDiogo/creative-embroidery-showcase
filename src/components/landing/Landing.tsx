@@ -498,16 +498,15 @@ function CreativeExamples() {
     <section className="bg-muted py-20">
       <div className="mx-auto max-w-6xl px-5 text-center">
         <Eyebrow>Quelques idées</Eyebrow>
-        <h2 className="reveal text-4xl font-bold md:text-5xl">À vous de créer.</h2>
+        <h2 className="text-4xl font-bold md:text-5xl">À vous de créer.</h2>
         <p className="mx-auto mt-5 max-w-2xl text-muted-foreground">Des exemples de cartes, d'étiquettes et de motifs à réaliser avec les modèles BordaPapel.</p>
         <div className="mt-10 grid gap-6 text-left md:grid-cols-3">
           {creativeExamples.map((example) => (
             <article key={example.title} className="overflow-hidden rounded-3xl bg-card shadow-soft">
-              <div className="relative aspect-[3/4] overflow-hidden bg-secondary">
+              <div className="aspect-[3/4] overflow-hidden bg-secondary">
                 <img src={example.img} alt={example.alt} width={640} height={960} loading="lazy" decoding="async" className="h-full w-full object-cover" />
-                <span className="absolute left-3 top-3 rounded-full bg-background/90 px-3 py-1 text-[10px] font-extrabold uppercase tracking-widest text-primary shadow-soft">Exemple de création</span>
               </div>
-              <div className="reveal p-6">
+              <div className="p-6">
                 <h3 className="text-2xl font-bold">{example.title}</h3>
               </div>
             </article>
