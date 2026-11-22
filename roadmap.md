@@ -1,5 +1,6 @@
 # Tarefas
 
+- [x] Refazer as cenas em primeira pessoa com acabamento caseiro, sem apresentá-las como avaliações reais.
 - [x] Tornar os retratos mais espontâneos, com estética de celular, mantendo a identificação de cenário ilustrativo.
 - [x] Preparar estrelas apenas para avaliações reais fornecidas pelo usuário.
 - [x] Criar seção visual com retratos e cenários explicitamente ilustrativos, sem apresentá-los como avaliações de clientes.

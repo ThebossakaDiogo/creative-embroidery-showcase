@@ -481,21 +481,21 @@ const creativeStories = [
     theme: "Le rituel du soir",
     text: "Elle réserve dix minutes après le dîner pour choisir ses fils, suivre les repères et regarder un motif botanique prendre forme, loin des écrans.",
     img: portraitClaire,
-    alt: "Mise en scène illustrée de Claire brodant un motif botanique sur papier",
+    alt: "Vue subjective illustrative de mains brodant un motif botanique sur papier",
   },
   {
     name: "Nadia",
     theme: "Des cadeaux personnels",
     text: "Elle imagine des étiquettes assorties à chaque paquet et la surprise de ses proches devant un cadeau préparé avec une attention vraiment personnelle.",
     img: portraitNadia,
-    alt: "Mise en scène illustrée de Nadia préparant des étiquettes cadeaux brodées",
+    alt: "Vue subjective illustrative de mains préparant une étiquette cadeau brodée",
   },
   {
     name: "Sophie",
     theme: "Sa petite vitrine créative",
     text: "Elle dispose ses cartes près de la fenêtre, règle son smartphone et compose une présentation soignée pour montrer ses créations.",
     img: portraitSophie,
-    alt: "Mise en scène illustrée de Sophie photographiant ses cartes brodées",
+    alt: "Vue subjective illustrative de mains disposant des cartes brodées sur une table",
   },
 ];
 
@@ -511,7 +511,7 @@ function CreativeStories() {
           {creativeStories.map((story) => (
             <article key={story.name} className="overflow-hidden rounded-3xl bg-card shadow-soft">
               <div className="relative aspect-[3/4] overflow-hidden bg-secondary">
-                <img src={story.img} alt={story.alt} width={768} height={1152} loading="lazy" decoding="async" className="h-full w-full object-cover" />
+                <img src={story.img} alt={story.alt} width={640} height={960} loading="lazy" decoding="async" className="h-full w-full object-cover" />
                 <span className="absolute left-3 top-3 rounded-full bg-background/90 px-3 py-1 text-[10px] font-extrabold uppercase tracking-widest text-primary shadow-soft">Scénario illustratif</span>
               </div>
               <div className="reveal p-6">
