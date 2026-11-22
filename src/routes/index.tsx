@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Landing } from "@/components/landing/Landing";
+import { hero } from "@/config/media";
 
 const title = "Broderie sur Papier : 200 Modèles à Imprimer | BordaPapel";
 const description =
@@ -7,6 +8,9 @@ const description =
 
 export const Route = createFileRoute("/")({
   head: () => ({
+    links: [
+      { rel: "preload", as: "image", href: hero, fetchpriority: "high" },
+    ],
     meta: [
       { title },
       { name: "description", content: description },

@@ -1,20 +1,26 @@
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { campaign, getMode, euro, discountPct, type CampaignMode } from "@/config/campaign";
-import hero from "@/assets/hero-mockup.avif";
-import pCalme from "@/assets/profil-calme.avif";
-import pCadeaux from "@/assets/profil-cadeaux.avif";
-import pRevenu from "@/assets/profil-revenu.avif";
-import gNoel from "@/assets/galerie-noel.avif";
-import gCartes from "@/assets/galerie-cartes.avif";
-import gFlorals from "@/assets/galerie-florals.avif";
-import gOrnements from "@/assets/galerie-ornements.avif";
-import avantApres from "@/assets/avant-apres.avif";
-import bonusGuideVentes from "@/assets/bonus-guide-ventes.avif";
-import bonusCalculPrix from "@/assets/bonus-calcul-prix.avif";
-import bonusVitrineAtelier from "@/assets/bonus-vitrine-atelier.avif";
+import {
+  avantApres,
+  bonusCalculPrix,
+  bonusGuideVentes,
+  bonusVitrineAtelier,
+  demonstrationPoster,
+  gCartes,
+  gFlorals,
+  gNoel,
+  gOrnements,
+  guaranteeSeal,
+  hero,
+  pCadeaux,
+  pCalme,
+  pRevenu,
+  portraitClaire,
+  portraitNadia,
+  portraitSophie,
+} from "@/config/media";
 import demonstrationVideo from "@/assets/bordapapel-demonstration.mp4.asset.json";
-import demonstrationPoster from "@/assets/demonstration-poster.avif";
 import { UpsellProvider, useUpsell } from "@/components/landing/Upsell";
 import { CampaignCountdown } from "@/components/landing/CampaignCountdown";
 
@@ -154,7 +160,7 @@ function Hero({ mode }: { mode: CampaignMode }) {
         <p className="mt-4 text-sm font-medium text-secondary-foreground/80">Accès immédiat · 200 modèles + 3 cadeaux · Sans abonnement</p>
 
         <div className="mx-auto mt-10 max-w-4xl overflow-hidden rounded-2xl border border-gold/30 shadow-soft">
-          <img src={hero} alt="Modèles imprimés et cartes de Noël brodées sur papier" width={1536} height={640} fetchPriority="high" className="w-full" />
+          <img src={hero} alt="Modèles imprimés et cartes de Noël brodées sur papier" width={1536} height={640} decoding="async" className="w-full" />
         </div>
       </div>
     </section>
@@ -288,7 +294,7 @@ function Profiles() {
             ))}
           </ul>
         </div>
-        <img src={p.img} alt={p.alt} width={896} height={1088} loading="lazy" className="w-full rounded-2xl shadow-soft" />
+        <img src={p.img} alt={p.alt} width={896} height={1088} loading="lazy" decoding="async" className="w-full rounded-2xl shadow-soft" />
       </div>
     </section>
   );
@@ -326,9 +332,9 @@ function Steps() {
             <Eyebrow light>Du papier à une pièce unique</Eyebrow>
             <h3 className="text-3xl font-bold md:text-4xl">Un modèle imprimé. Une création dont vous serez fière.</h3>
             <p className="mt-4 text-secondary-foreground/85">Les repères vous indiquent où percer et où passer le fil. Vous voyez votre ouvrage prendre forme, point après point.</p>
-            <figure className="reveal mt-6">
-              <img src={avantApres} alt="Avant / après : modèle imprimé et broderie terminée" width={1280} height={720} loading="lazy" className="w-full rounded-2xl border border-gold/20" />
-              <figcaption className="mt-3 flex justify-between gap-4 text-sm text-secondary-foreground/80"><span>Avant : le modèle</span><span>Après : votre broderie</span></figcaption>
+            <figure className="mt-6">
+              <img src={avantApres} alt="Avant / après : modèle imprimé et broderie terminée" width={1280} height={720} loading="lazy" decoding="async" className="w-full rounded-2xl border border-gold/20" />
+              <figcaption className="reveal mt-3 flex justify-between gap-4 text-sm text-secondary-foreground/80"><span>Avant : le modèle</span><span>Après : votre broderie</span></figcaption>
             </figure>
           </div>
         </div>
@@ -368,7 +374,7 @@ function Gallery() {
       <div className="mt-10 grid gap-6 sm:grid-cols-2">
         {items.map((g) => (
           <figure key={g.title} className="overflow-hidden rounded-2xl bg-card shadow-soft">
-            <img src={g.img} alt={g.title} width={832} height={832} loading="lazy" className="aspect-square w-full object-cover transition duration-500 hover:scale-105" />
+            <img src={g.img} alt={g.title} width={832} height={832} loading="lazy" decoding="async" className="aspect-square w-full object-cover transition duration-500 hover:scale-105" />
             <figcaption className="p-5">
               <span className="eyebrow text-primary">{g.cat}</span>
               <h3 className="mt-1 text-2xl font-bold">{g.title}</h3>
@@ -396,12 +402,12 @@ function Bonuses() {
         </div>
         <div className="mt-12 grid gap-6 md:grid-cols-3">
           {bonuses.map((b, i) => (
-            <article key={b.title} className="reveal group relative overflow-hidden rounded-2xl bg-card shadow-soft">
+            <article key={b.title} className="group relative overflow-hidden rounded-2xl bg-card shadow-soft">
               <div className="relative aspect-[4/3] overflow-hidden bg-forest-gradient">
-                <img src={b.img} alt={b.alt} width={1448} height={1086} loading="lazy" className="h-full w-full object-cover transition duration-500 group-hover:scale-105" />
+                <img src={b.img} alt={b.alt} width={1448} height={1086} loading="lazy" decoding="async" className="h-full w-full object-cover transition duration-500 group-hover:scale-105" />
                 <span className="absolute left-4 top-4 rounded-full bg-gold-gradient px-4 py-1.5 text-sm font-bold text-accent-foreground shadow-soft">{b.n}</span>
               </div>
-              <div className="p-6">
+              <div className="reveal p-6">
                 <p className="eyebrow text-primary">{b.kicker}</p>
                 <h3 className="mt-2 text-2xl font-bold">{b.title}</h3>
                 <p className="mt-3 text-sm text-muted-foreground">{b.text}</p>
@@ -469,6 +475,57 @@ function Offer({ mode }: { mode: CampaignMode }) {
   );
 }
 
+const creativeStories = [
+  {
+    name: "Claire",
+    theme: "Le rituel du soir",
+    text: "Elle réserve dix minutes après le dîner pour choisir ses fils, suivre les repères et regarder un motif botanique prendre forme, loin des écrans.",
+    img: portraitClaire,
+    alt: "Mise en scène illustrée de Claire brodant un motif botanique sur papier",
+  },
+  {
+    name: "Nadia",
+    theme: "Des cadeaux personnels",
+    text: "Elle imagine des étiquettes assorties à chaque paquet et la surprise de ses proches devant un cadeau préparé avec une attention vraiment personnelle.",
+    img: portraitNadia,
+    alt: "Mise en scène illustrée de Nadia préparant des étiquettes cadeaux brodées",
+  },
+  {
+    name: "Sophie",
+    theme: "Sa petite vitrine créative",
+    text: "Elle dispose ses cartes près de la fenêtre, règle son smartphone et compose une présentation soignée pour montrer ses créations.",
+    img: portraitSophie,
+    alt: "Mise en scène illustrée de Sophie photographiant ses cartes brodées",
+  },
+];
+
+function CreativeStories() {
+  return (
+    <section className="bg-muted py-20">
+      <div className="mx-auto max-w-6xl px-5 text-center">
+        <Eyebrow>Inspirez-vous</Eyebrow>
+        <h2 className="reveal text-4xl font-bold md:text-5xl">Et si votre prochain moment créatif commençait ici ?</h2>
+        <p className="mx-auto mt-5 max-w-2xl text-muted-foreground">Trois scénarios pour vous aider à imaginer comment BordaPapel peut trouver sa place dans votre quotidien.</p>
+        <p className="mx-auto mt-5 inline-flex rounded-full border border-primary/20 bg-card px-4 py-2 text-xs font-bold text-primary">Portraits et scénarios illustratifs · ne sont pas des avis de clientes.</p>
+        <div className="mt-10 grid gap-6 text-left md:grid-cols-3">
+          {creativeStories.map((story) => (
+            <article key={story.name} className="overflow-hidden rounded-3xl bg-card shadow-soft">
+              <div className="aspect-[3/4] overflow-hidden bg-secondary">
+                <img src={story.img} alt={story.alt} width={768} height={1152} loading="lazy" decoding="async" className="h-full w-full object-cover" />
+              </div>
+              <div className="reveal p-6">
+                <p className="eyebrow text-primary">{story.theme}</p>
+                <h3 className="mt-2 text-3xl font-bold">{story.name}</h3>
+                <p className="mt-3 leading-relaxed text-muted-foreground">{story.text}</p>
+              </div>
+            </article>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
 function Testimonials() {
   if (campaign.testimonials.length === 0) return null;
   return (
@@ -489,13 +546,23 @@ function Testimonials() {
 
 function Guarantee() {
   return (
-    <section className="mx-auto max-w-3xl px-5 py-20 text-center">
-      <div className="stitch-border rounded-3xl bg-card p-10">
-        <Eyebrow>🛡️ Une garantie simple</Eyebrow>
-        <h2 className="text-4xl font-bold md:text-5xl">{campaign.guaranteeDays} jours satisfaite ou remboursée.</h2>
-        <p className="mt-5 text-muted-foreground">
-          Essayez le coffret complet : imprimez les modèles, réalisez vos premières broderies. Si la broderie sur papier ne vous plaît pas, envoyez-nous simplement un e-mail dans les {campaign.guaranteeDays} jours suivant l'achat et nous vous rembourserons intégralement, selon nos conditions de remboursement.
-        </p>
+    <section className="mx-auto max-w-5xl px-5 py-20">
+      <div className="stitch-border grid items-center gap-8 rounded-3xl bg-card p-6 text-center md:grid-cols-[280px_1fr] md:p-10 md:text-left">
+        <div className="relative mx-auto w-full max-w-64">
+          <div className="absolute inset-8 rounded-full bg-gold/20 blur-2xl" aria-hidden />
+          <img src={guaranteeSeal} alt="Sceau brodé : garantie de 30 jours" width={640} height={640} loading="lazy" decoding="async" className="relative h-auto w-full" />
+        </div>
+        <div className="reveal">
+          <Eyebrow>Une garantie simple</Eyebrow>
+          <h2 className="text-4xl font-bold md:text-5xl">{campaign.guaranteeDays} jours satisfaite ou remboursée.</h2>
+          <p className="mt-5 leading-relaxed text-muted-foreground">
+            Essayez le coffret complet : imprimez les modèles et réalisez vos premières broderies. Si la broderie sur papier ne vous plaît pas, envoyez-nous simplement un e-mail dans les {campaign.guaranteeDays} jours suivant l'achat et nous vous rembourserons intégralement, selon nos conditions de remboursement.
+          </p>
+          <div className="mt-6 flex flex-wrap justify-center gap-3 text-sm font-bold text-secondary md:justify-start">
+            <span className="rounded-full bg-muted px-4 py-2">✓ {campaign.guaranteeDays} jours pour essayer</span>
+            <span className="rounded-full bg-muted px-4 py-2">✓ Une simple demande par e-mail</span>
+          </div>
+        </div>
       </div>
     </section>
   );
@@ -585,6 +652,7 @@ export function Landing() {
         <Profiles />
         <Bonuses />
         <Offer mode={mode} />
+        <CreativeStories />
         <Testimonials />
         <Guarantee />
         <Faq />

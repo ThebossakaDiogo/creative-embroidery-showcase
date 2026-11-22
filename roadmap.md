@@ -1,5 +1,8 @@
 # Tarefas
 
+- [x] Criar seção visual com retratos e cenários explicitamente ilustrativos, sem apresentá-los como avaliações de clientes.
+- [x] Adicionar selo em imagem à garantia de 30 dias.
+- [x] Servir as imagens AVIF por CDN, antecipar a principal e separar o carregamento das animações de texto.
 - [x] Retirar o bloco de preço da hero, mantendo o destaque na seção da oferta.
 - [x] Diferenciar o popup com uma paleta vinho e dourada mais chamativa.
 - [x] Aplicar tipografia arredondada, moderna e mais legível.

@@ -22,11 +22,13 @@ import {
 } from "react";
 import { campaign, euro, getMode } from "@/config/campaign";
 import { CampaignCountdown } from "@/components/landing/CampaignCountdown";
-import christmasCollection from "@/assets/galerie-ornements.avif";
-import personalizedGifts from "@/assets/profil-cadeaux.avif";
-import premiumFlowers from "@/assets/galerie-florals.avif";
-import businessGuide from "@/assets/bonus-guide-ventes.avif";
-import creativeCalendar from "@/assets/bonus-vitrine-atelier.avif";
+import {
+  bonusGuideVentes as businessGuide,
+  bonusVitrineAtelier as creativeCalendar,
+  gFlorals as premiumFlowers,
+  gOrnements as christmasCollection,
+  pCadeaux as personalizedGifts,
+} from "@/config/media";
 
 const UpsellContext = createContext<() => void>(() => {});
 
@@ -73,7 +75,7 @@ function UpsellDialog({ open, onOpenChange }: { open: boolean; onOpenChange: (op
           "-=0.25",
         )
         .fromTo(
-          ".upsell-miniature",
+          ".upsell-miniature-copy",
           { opacity: 0, y: 14 },
           { opacity: 1, y: 0, duration: 0.28, stagger: 0.055 },
           "-=0.25",
@@ -156,12 +158,12 @@ function UpsellDialog({ open, onOpenChange }: { open: boolean; onOpenChange: (op
                   {premiumBonuses.map(({ title, detail, icon: Icon, image, alt }) => (
                     <div key={title} className="upsell-miniature overflow-hidden rounded-2xl border border-gold/25 bg-card shadow-soft">
                       <div className="relative aspect-[4/3] overflow-hidden bg-muted">
-                        <img src={image} alt={alt} width={320} height={240} loading="lazy" className="h-full w-full object-cover" />
+                        <img src={image} alt={alt} width={320} height={240} decoding="async" className="h-full w-full object-cover" />
                         <div className="absolute bottom-2 left-2 flex h-9 w-9 items-center justify-center rounded-xl bg-wine-gradient text-gold shadow-soft">
                           <Icon className="h-4 w-4" aria-hidden />
                         </div>
                       </div>
-                      <div className="p-3 text-center">
+                      <div className="upsell-miniature-copy p-3 text-center">
                         <h3 className="font-sans text-xs font-extrabold leading-snug">{title}</h3>
                         <p className="mt-1 text-[11px] leading-snug text-muted-foreground">{detail}</p>
                       </div>
