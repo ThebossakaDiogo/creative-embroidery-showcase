@@ -79,8 +79,8 @@ function UpsellDialog({ open, onOpenChange }: { open: boolean; onOpenChange: (op
   }, [open]);
 
   function acceptPremium() {
-    window.__lovableEvents?.track?.("project.upgrade_accepted", { plan: "premium", price: campaign.premiumPrice });
     if (!premiumAvailable) return;
+    window.__lovableEvents?.track?.("project.upgrade_accepted", { plan: "premium", price: campaign.premiumPrice });
     onOpenChange(false);
     window.location.assign(campaign.premiumCheckoutUrl);
   }
