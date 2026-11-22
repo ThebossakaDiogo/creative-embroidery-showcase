@@ -1,0 +1,72 @@
+{
+  "schema_version": 1,
+  "events": {
+    "project.upgrade_accepted": {
+      "event_schema_version": 1,
+      "description": "A visitor chooses the optional Premium Christmas offer in the upgrade dialog.",
+      "privacy": {
+        "contains_pii": false,
+        "purpose": "product_analytics"
+      },
+      "properties_schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "plan",
+          "price"
+        ],
+        "properties": {
+          "plan": {
+            "type": "string",
+            "enum": [
+              "premium"
+            ]
+          },
+          "price": {
+            "type": "number"
+          }
+        }
+      }
+    },
+    "project.upgrade_declined": {
+      "event_schema_version": 1,
+      "description": "A visitor declines Premium and chooses to keep the Essential offer.",
+      "privacy": {
+        "contains_pii": false,
+        "purpose": "product_analytics"
+      },
+      "properties_schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "plan",
+          "price"
+        ],
+        "properties": {
+          "plan": {
+            "type": "string",
+            "enum": [
+              "essential"
+            ]
+          },
+          "price": {
+            "type": "number"
+          }
+        }
+      }
+    },
+    "project.upgrade_popup_viewed": {
+      "event_schema_version": 1,
+      "description": "A visitor opens the optional Premium upgrade dialog by clicking any purchase CTA.",
+      "privacy": {
+        "contains_pii": false,
+        "purpose": "product_analytics"
+      },
+      "properties_schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {}
+      }
+    }
+  }
+}

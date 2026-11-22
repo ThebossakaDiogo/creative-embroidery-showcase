@@ -1,16 +1,20 @@
 import { useEffect, useState, type ReactNode } from "react";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { campaign, getMode, getDeadline, euro, discountPct, type CampaignMode } from "@/config/campaign";
-import hero from "@/assets/hero-mockup.jpg";
-import pCalme from "@/assets/profil-calme.jpg";
-import pCadeaux from "@/assets/profil-cadeaux.jpg";
-import pRevenu from "@/assets/profil-revenu.jpg";
-import gNoel from "@/assets/galerie-noel.jpg";
-import gCartes from "@/assets/galerie-cartes.jpg";
-import gFlorals from "@/assets/galerie-florals.jpg";
-import gOrnements from "@/assets/galerie-ornements.jpg";
-import avantApres from "@/assets/avant-apres.jpg";
+import hero from "@/assets/hero-mockup.avif";
+import pCalme from "@/assets/profil-calme.avif";
+import pCadeaux from "@/assets/profil-cadeaux.avif";
+import pRevenu from "@/assets/profil-revenu.avif";
+import gNoel from "@/assets/galerie-noel.avif";
+import gCartes from "@/assets/galerie-cartes.avif";
+import gFlorals from "@/assets/galerie-florals.avif";
+import gOrnements from "@/assets/galerie-ornements.avif";
+import avantApres from "@/assets/avant-apres.avif";
+import bonusGuideVentes from "@/assets/bonus-guide-ventes.avif";
+import bonusCalculPrix from "@/assets/bonus-calcul-prix.avif";
+import bonusVitrineAtelier from "@/assets/bonus-vitrine-atelier.avif";
 import demonstrationVideo from "@/assets/bordapapel-demonstration.mp4.asset.json";
+import { UpsellProvider, useUpsell } from "@/components/landing/Upsell";
 
 const price = euro(campaign.price);
 
@@ -33,17 +37,20 @@ function useReveal() {
 }
 
 function Cta({ children, variant = "primary" }: { children: ReactNode; variant?: "primary" | "gold" }) {
+  const openUpsell = useUpsell();
   const cls =
     variant === "gold"
       ? "bg-gold-gradient text-accent-foreground"
       : "bg-primary text-primary-foreground shadow-cta";
   return (
-    <a
-      href={campaign.checkoutUrl}
+    <button
+      type="button"
+      data-purchase-cta
+      onClick={openUpsell}
       className={`cta-pulse inline-flex items-center justify-center rounded-full px-8 py-4 text-base font-semibold tracking-wide transition hover:brightness-110 md:text-lg ${cls}`}
     >
       {children}
-    </a>
+    </button>
   );
 }
 
@@ -367,9 +374,9 @@ function Gallery() {
 }
 
 const bonuses = [
-  { n: "Cadeau Nº 1", kicker: "Du papier à la vente", title: "Guide de vos premières ventes", text: "Un guide pratique pour présenter, tarifer et proposer vos créations faites main : plan d'action, check-lists et exemples de publications." },
-  { n: "Cadeau Nº 2", kicker: "Fixez vos prix sereinement", title: "Kit de calcul des prix", text: "Une calculatrice simple pour estimer le coût du matériel, le temps de réalisation et la marge souhaitée. Avec le Carnet de l'artisane." },
-  { n: "Cadeau Nº 3", kicker: "Photographiez. Présentez. Partagez.", title: "Kit Vitrine de l'Atelier", text: "Conseils photo en lumière naturelle, modèles de présentation produit et exemples de messages pour parler de vos créations." },
+  { n: "Cadeau Nº 1", kicker: "Du papier à la vente", title: "Guide de vos premières ventes", text: "Un guide pratique pour présenter, tarifer et proposer vos créations faites main : plan d'action, check-lists et exemples de publications.", img: bonusGuideVentes, alt: "Guide de vente et cartes de broderie sur papier" },
+  { n: "Cadeau Nº 2", kicker: "Fixez vos prix sereinement", title: "Kit de calcul des prix", text: "Une calculatrice simple pour estimer le coût du matériel, le temps de réalisation et la marge souhaitée. Avec le Carnet de l'artisane.", img: bonusCalculPrix, alt: "Tablette, calculatrice et matériel pour calculer le prix des créations" },
+  { n: "Cadeau Nº 3", kicker: "Photographiez. Présentez. Partagez.", title: "Kit Vitrine de l'Atelier", text: "Conseils photo en lumière naturelle, modèles de présentation produit et exemples de messages pour parler de vos créations.", img: bonusVitrineAtelier, alt: "Smartphone photographiant des cartes brodées pour le kit vitrine" },
 ];
 
 function Bonuses() {
@@ -382,11 +389,10 @@ function Bonuses() {
         </div>
         <div className="mt-12 grid gap-6 md:grid-cols-3">
           {bonuses.map((b, i) => (
-            <article key={b.title} className="reveal relative overflow-hidden rounded-2xl bg-card shadow-soft">
-              <div className="relative flex h-44 items-center justify-center bg-forest-gradient">
-                <div aria-hidden className="absolute inset-y-0 left-1/2 w-5 -translate-x-1/2 bg-primary" />
-                <div aria-hidden className="absolute inset-x-0 top-1/2 h-5 -translate-y-1/2 bg-primary" />
-                <span className="relative rounded-full bg-gold-gradient px-4 py-1.5 text-sm font-bold text-accent-foreground">{b.n}</span>
+            <article key={b.title} className="reveal group relative overflow-hidden rounded-2xl bg-card shadow-soft">
+              <div className="relative aspect-[4/3] overflow-hidden bg-forest-gradient">
+                <img src={b.img} alt={b.alt} width={1448} height={1086} loading="lazy" className="h-full w-full object-cover transition duration-500 group-hover:scale-105" />
+                <span className="absolute left-4 top-4 rounded-full bg-gold-gradient px-4 py-1.5 text-sm font-bold text-accent-foreground shadow-soft">{b.n}</span>
               </div>
               <div className="p-6">
                 <p className="eyebrow text-primary">{b.kicker}</p>
@@ -539,13 +545,14 @@ function Closing({ mode }: { mode: CampaignMode }) {
 }
 
 function StickyCta() {
+  const openUpsell = useUpsell();
   return (
     <div className="fixed inset-x-0 bottom-0 z-50 flex items-center justify-between gap-3 border-t border-gold/30 bg-forest-deep px-4 py-3 text-secondary-foreground md:hidden">
       <div>
         <p className="text-xs opacity-75">Coffret 200 modèles</p>
         <p className="font-display text-2xl font-bold text-gold">{price}</p>
       </div>
-      <a href={campaign.checkoutUrl} className="rounded-full bg-primary px-5 py-3 text-sm font-semibold text-primary-foreground">J'en profite →</a>
+      <button type="button" data-purchase-cta onClick={openUpsell} className="rounded-full bg-primary px-5 py-3 text-sm font-semibold text-primary-foreground">J'en profite →</button>
     </div>
   );
 }
@@ -554,23 +561,25 @@ export function Landing() {
   const mode = useMode();
   useReveal();
   return (
-    <main className="pb-20 md:pb-0">
-      <Hero mode={mode} />
-      <Problems />
-      <Why />
-      <Profiles />
-      <Steps />
-      <Gallery />
-      <Bonuses />
-      <Offer mode={mode} />
-      <Testimonials />
-      <Guarantee />
-      <Faq />
-      <Closing mode={mode} />
-      <footer className="bg-forest-deep py-8 text-center text-xs text-secondary-foreground/70">
-        © 2026 BordaPapel · Produit numérique · Photos d'inspiration non contractuelles
-      </footer>
-      <StickyCta />
-    </main>
+    <UpsellProvider>
+      <main className="pb-20 md:pb-0">
+        <Hero mode={mode} />
+        <Problems />
+        <Why />
+        <Profiles />
+        <Steps />
+        <Gallery />
+        <Bonuses />
+        <Offer mode={mode} />
+        <Testimonials />
+        <Guarantee />
+        <Faq />
+        <Closing mode={mode} />
+        <footer className="bg-forest-deep py-8 text-center text-xs text-secondary-foreground/70">
+          © 2026 BordaPapel · Produit numérique · Photos d'inspiration non contractuelles
+        </footer>
+        <StickyCta />
+      </main>
+    </UpsellProvider>
   );
 }

@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { getMode, euro, discountPct } from "./campaign";
+import { campaign, getMode, euro, discountPct } from "./campaign";
 
 describe("campaign rules", () => {
   it("Black Friday mode during the Black Friday period", () => {
@@ -16,5 +16,18 @@ describe("campaign rules", () => {
   });
   it("discount from 29,90 to 9,90 is 67%", () => {
     expect(discountPct()).toBe(67);
+  });
+  it("keeps the main Essential price at 9,90 €", () => {
+    expect(campaign.price).toBe(9.9);
+  });
+  it("sets the optional Premium price at 19,90 €", () => {
+    expect(campaign.premiumPrice).toBe(19.9);
+  });
+  it("keeps the Premium upgrade exactly 10 € above Essential", () => {
+    expect(campaign.premiumPrice - campaign.price).toBeCloseTo(10);
+  });
+  it("has no old or invented checkout destinations while the new checkout is pending", () => {
+    expect(campaign.checkoutUrl).toBe("");
+    expect(campaign.premiumCheckoutUrl).toBe("");
   });
 });

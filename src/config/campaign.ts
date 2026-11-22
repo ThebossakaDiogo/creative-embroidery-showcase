@@ -2,9 +2,12 @@
 export type CampaignMode = "blackfriday" | "noel" | "evergreen";
 
 export const campaign = {
-  checkoutUrl:
-    "https://checkout.payt.com.br/a36b2f382191582727ab5d5ab2c9892c?utm_source=organic&utm_campaign=&utm_medium=&utm_content=&utm_term=",
+  // Add the new real checkout URLs here when they are ready. Empty means no payment navigation.
+  checkoutUrl: "",
+  premiumCheckoutUrl: "",
   price: 9.9,
+  premiumPrice: 19.9,
+  premiumBonusesReady: true,
   referencePrice: 29.9,
   // Set to true only when the reference price is backed by real pricing history.
   showReferencePrice: true,
