@@ -10,6 +10,7 @@ import gCartes from "@/assets/galerie-cartes.jpg";
 import gFlorals from "@/assets/galerie-florals.jpg";
 import gOrnements from "@/assets/galerie-ornements.jpg";
 import avantApres from "@/assets/avant-apres.jpg";
+import demonstrationVideo from "@/assets/bordapapel-demonstration.mp4.asset.json";
 
 const price = euro(campaign.price);
 
@@ -131,6 +132,21 @@ function Hero({ mode }: { mode: CampaignMode }) {
         </p>
         <div className="mx-auto mt-10 max-w-4xl overflow-hidden rounded-2xl border border-gold/30 shadow-soft">
           <img src={hero} alt="Modèles imprimés et cartes de Noël brodées sur papier" width={1536} height={640} className="w-full" />
+        </div>
+        <div className="mx-auto mt-8 max-w-xl overflow-hidden rounded-2xl border border-gold/30 shadow-soft">
+          <video
+            src={demonstrationVideo.url}
+            autoPlay
+            loop
+            muted
+            playsInline
+            preload="metadata"
+            controlsList="nodownload"
+            aria-label="Démonstration de broderie sur papier"
+            width={1080}
+            height={1350}
+            className="block h-auto w-full"
+          />
         </div>
         <p className="mx-auto mt-8 max-w-xl font-display text-xl italic opacity-90">
           Cette année, prenez le temps de créer quelque chose de beau avec vos propres mains.
