@@ -17,7 +17,8 @@ export const campaign = {
   // ISO dates with Paris offset. Modes switch automatically when a period ends.
   blackFriday: { start: "2026-11-20T00:00:00+01:00", end: "2026-12-01T23:59:59+01:00" },
   noel: { start: "2026-12-02T00:00:00+01:00", end: "2026-12-25T23:59:59+01:00" },
-  testimonials: [] as { name: string; city: string; text: string }[],
+  // Real customer reviews only; rating is the customer's genuine score out of five.
+  testimonials: [] as { name: string; city: string; text: string; rating: 1 | 2 | 3 | 4 | 5 }[],
 };
 
 export function getMode(now: Date = new Date()): CampaignMode {

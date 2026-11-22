@@ -1,5 +1,7 @@
 # Tarefas
 
+- [x] Tornar os retratos mais espontâneos, com estética de celular, mantendo a identificação de cenário ilustrativo.
+- [x] Preparar estrelas apenas para avaliações reais fornecidas pelo usuário.
 - [x] Criar seção visual com retratos e cenários explicitamente ilustrativos, sem apresentá-los como avaliações de clientes.
 - [x] Adicionar selo em imagem à garantia de 30 dias.
 - [x] Servir as imagens AVIF por CDN, antecipar a principal e separar o carregamento das animações de texto.

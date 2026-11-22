@@ -510,8 +510,9 @@ function CreativeStories() {
         <div className="mt-10 grid gap-6 text-left md:grid-cols-3">
           {creativeStories.map((story) => (
             <article key={story.name} className="overflow-hidden rounded-3xl bg-card shadow-soft">
-              <div className="aspect-[3/4] overflow-hidden bg-secondary">
+              <div className="relative aspect-[3/4] overflow-hidden bg-secondary">
                 <img src={story.img} alt={story.alt} width={768} height={1152} loading="lazy" decoding="async" className="h-full w-full object-cover" />
+                <span className="absolute left-3 top-3 rounded-full bg-background/90 px-3 py-1 text-[10px] font-extrabold uppercase tracking-widest text-primary shadow-soft">Scénario illustratif</span>
               </div>
               <div className="reveal p-6">
                 <p className="eyebrow text-primary">{story.theme}</p>
@@ -526,6 +527,18 @@ function CreativeStories() {
   );
 }
 
+function ReviewStars({ rating }: { rating: 1 | 2 | 3 | 4 | 5 }) {
+  return (
+    <div className="mb-4 flex gap-1 text-xl" aria-label={`Note : ${rating} sur 5 étoiles`}>
+      <span aria-hidden className="contents">
+        {Array.from({ length: 5 }, (_, index) => (
+          <span key={index} className={index < rating ? "text-gold" : "text-border"}>★</span>
+        ))}
+      </span>
+    </div>
+  );
+}
+
 function Testimonials() {
   if (campaign.testimonials.length === 0) return null;
   return (
@@ -535,6 +548,7 @@ function Testimonials() {
       <div className="mt-10 grid gap-6 md:grid-cols-3">
         {campaign.testimonials.map((t) => (
           <blockquote key={t.name} className="rounded-2xl bg-card p-6 text-left shadow-soft">
+            <ReviewStars rating={t.rating} />
             <p className="italic">« {t.text} »</p>
             <footer className="mt-4 text-sm font-bold">{t.name} · {t.city}</footer>
           </blockquote>
