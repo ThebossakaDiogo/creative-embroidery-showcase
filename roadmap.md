@@ -1,7 +1,7 @@
 # Tarefas
 
 - [x] Adicionar aviso discreto de independência em relação à Meta no rodapé.
-- [ ] Instalar o Pixel oficial após receber o ID e a escolha de consentimento.
+- [ ] Instalar o Pixel oficial somente se o usuário criar e fornecer o ID futuramente; adiado por decisão do usuário.
 - [ ] Configurar consentimento e privacidade conforme a rota escolhida.
 - [ ] Verificar transmissão no navegador e recebimento no Meta Events Manager quando possível.
 - [x] Dificultar clique direito, arraste e toque prolongado nas imagens, sem prometer proteção absoluta.
