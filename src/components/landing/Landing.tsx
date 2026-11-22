@@ -1,6 +1,6 @@
-import { useEffect, useState, type ReactNode } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-import { campaign, getMode, getDeadline, euro, discountPct, type CampaignMode } from "@/config/campaign";
+import { campaign, getMode, euro, discountPct, type CampaignMode } from "@/config/campaign";
 import hero from "@/assets/hero-mockup.avif";
 import pCalme from "@/assets/profil-calme.avif";
 import pCadeaux from "@/assets/profil-cadeaux.avif";
@@ -14,7 +14,9 @@ import bonusGuideVentes from "@/assets/bonus-guide-ventes.avif";
 import bonusCalculPrix from "@/assets/bonus-calcul-prix.avif";
 import bonusVitrineAtelier from "@/assets/bonus-vitrine-atelier.avif";
 import demonstrationVideo from "@/assets/bordapapel-demonstration.mp4.asset.json";
+import demonstrationPoster from "@/assets/demonstration-poster.avif";
 import { UpsellProvider, useUpsell } from "@/components/landing/Upsell";
+import { CampaignCountdown } from "@/components/landing/CampaignCountdown";
 
 const price = euro(campaign.price);
 
@@ -47,7 +49,7 @@ function Cta({ children, variant = "primary" }: { children: ReactNode; variant?:
       type="button"
       data-purchase-cta
       onClick={openUpsell}
-      className={`cta-pulse inline-flex items-center justify-center rounded-full px-8 py-4 text-base font-semibold tracking-wide transition hover:brightness-110 md:text-lg ${cls}`}
+      className={`cta-pulse inline-flex items-center justify-center rounded-full px-8 py-4 text-center text-base font-bold leading-snug tracking-wide transition hover:brightness-110 md:text-lg ${cls}`}
     >
       {children}
     </button>
@@ -75,42 +77,51 @@ function Snow() {
   );
 }
 
-function Countdown({ mode }: { mode: CampaignMode }) {
-  const deadline = getDeadline(mode);
-  const [now, setNow] = useState<number | null>(null);
+function DemonstrationVideo() {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [active, setActive] = useState(false);
+  const [reduceMotion, setReduceMotion] = useState(false);
+
   useEffect(() => {
-    setNow(Date.now());
-    const id = setInterval(() => setNow(Date.now()), 1000);
-    return () => clearInterval(id);
+    const media = window.matchMedia("(prefers-reduced-motion: reduce)");
+    setReduceMotion(media.matches);
+    const element = containerRef.current;
+    if (!element) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry?.isIntersecting) return;
+        setActive(true);
+        observer.disconnect();
+      },
+      { rootMargin: "250px" },
+    );
+    observer.observe(element);
+    return () => observer.disconnect();
   }, []);
-  if (!deadline || now === null) return null;
-  const diff = Math.max(0, deadline.getTime() - now);
-  const parts = [
-    [Math.floor(diff / 864e5), "jours"],
-    [Math.floor(diff / 36e5) % 24, "h"],
-    [Math.floor(diff / 6e4) % 60, "min"],
-    [Math.floor(diff / 1e3) % 60, "s"],
-  ] as const;
-  const date = deadline.toLocaleDateString("fr-FR", { day: "numeric", month: "long", timeZone: "Europe/Paris" });
+
   return (
-    <div className="text-center">
-      <p className="mb-2 text-sm opacity-80">
-        {mode === "blackfriday" ? "Offre Black Friday valable jusqu'au" : "Offre de Noël valable jusqu'au"} {date}
-      </p>
-      <div className="flex justify-center gap-2">
-        {parts.map(([v, l]) => (
-          <div key={l} className="min-w-14 rounded-lg bg-forest-deep px-3 py-2 text-secondary-foreground">
-            <div className="font-display text-2xl font-bold">{String(v).padStart(2, "0")}</div>
-            <div className="text-[10px] uppercase tracking-widest opacity-70">{l}</div>
-          </div>
-        ))}
-      </div>
+    <div ref={containerRef} className="overflow-hidden rounded-2xl border border-gold/30 bg-forest-deep shadow-soft">
+      <video
+        src={active ? demonstrationVideo.url : undefined}
+        poster={demonstrationPoster}
+        autoPlay={active && !reduceMotion}
+        loop={!reduceMotion}
+        muted
+        controls={reduceMotion}
+        playsInline
+        preload={active ? "metadata" : "none"}
+        controlsList="nodownload"
+        aria-label="Démonstration de broderie sur papier"
+        width={1080}
+        height={1350}
+        className="block aspect-[4/5] h-auto w-full object-cover"
+      />
     </div>
   );
 }
 
 const eyebrowByMode: Record<CampaignMode, string> = {
-  blackfriday: "🎄 BLACK FRIDAY DE NOËL · OFFRE SPÉCIALE",
+  blackfriday: "🎁 BLACK FRIDAY WEEK · OFFRE DE NOËL",
   noel: "🎁 NOËL FAIT MAIN · ÉDITION 2026",
   evergreen: "🧵 200 MODÈLES À IMPRIMER · ACCÈS IMMÉDIAT",
 };
@@ -119,49 +130,48 @@ function Hero({ mode }: { mode: CampaignMode }) {
   return (
     <section className="relative overflow-hidden bg-forest-gradient text-secondary-foreground">
       {mode !== "evergreen" && <Snow />}
-      <div className="relative mx-auto max-w-5xl px-5 pb-16 pt-10 text-center md:pt-16">
-        <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-gold/40 px-4 py-1.5 text-xs font-semibold tracking-widest text-gold">
+      <div className="relative mx-auto max-w-5xl px-5 pb-16 pt-10 text-center md:pt-14">
+        <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-gold/40 bg-forest-deep/40 px-4 py-2 text-xs font-bold tracking-widest text-gold">
           {eyebrowByMode[mode]}
         </div>
-        <p className="eyebrow mb-6 text-gold/80">Imprimez · Brodez · Offrez · Recommencez</p>
-        <h1 className="mx-auto max-w-3xl text-4xl font-semibold leading-tight md:text-6xl">
+        <p className="eyebrow mb-5 text-gold/80">Imprimez · Brodez · Offrez</p>
+        <h1 className="mx-auto max-w-4xl text-4xl font-extrabold leading-tight md:text-6xl">
           {mode === "evergreen" ? (
-            <>La broderie, le plus doux chemin vers un esprit apaisé.</>
+            <>Créez de magnifiques broderies sur papier, <span className="text-gold">même en débutant.</span></>
           ) : (
-            <>
-              Et si votre plus beau cadeau de Noël était <em className="text-gold">un moment de douceur</em>&nbsp;?
-            </>
+            <>Créez de magnifiques cadeaux de Noël, <span className="text-gold">même si vous débutez.</span></>
           )}
         </h1>
-        <p className="mx-auto mt-6 max-w-2xl text-lg opacity-90">
-          Découvrez <strong>200 modèles de broderie sur papier à imprimer</strong> et créez de magnifiques décorations,
-          cartes et cadeaux faits main, même si vous débutez.
+        <p className="mx-auto mt-5 max-w-2xl text-lg leading-relaxed text-secondary-foreground/90 md:text-xl">
+          Imprimez l'un des <strong>200 modèles</strong>, suivez le guide et réalisez votre première carte ou décoration dès aujourd'hui.
         </p>
+
+        <div className="mx-auto mt-7 flex max-w-xl flex-wrap items-center justify-center gap-x-6 gap-y-2 rounded-3xl border border-gold/50 bg-card px-6 py-5 text-card-foreground shadow-soft">
+          <div>
+            {campaign.showReferencePrice && mode !== "evergreen" && (
+              <p className="text-sm font-bold text-muted-foreground">Au lieu de <s>{euro(campaign.referencePrice)}</s></p>
+            )}
+            <p className="eyebrow mt-1 text-primary">{mode === "blackfriday" ? "Black Friday Week" : "Offre spéciale"}</p>
+          </div>
+          <p className="font-display text-6xl font-black leading-none tracking-tight text-primary">{price}</p>
+          <div className="text-left text-sm font-bold">
+            {campaign.showReferencePrice && mode !== "evergreen" && (
+              <span className="mb-1 inline-flex rounded-full bg-primary px-3 py-1 font-bold text-primary-foreground">−{discountPct()} %</span>
+            )}
+            <p>Paiement unique</p>
+          </div>
+        </div>
+
+        <div className="mt-7">
+          <Cta variant="gold">
+            {mode === "blackfriday" ? "Je profite de la Black Friday Week" : mode === "noel" ? "Je profite de l'offre de Noël" : "Je découvre BordaPapel"}
+          </Cta>
+        </div>
+        <p className="mt-4 text-sm font-medium text-secondary-foreground/80">Accès immédiat · 200 modèles + 3 cadeaux · Sans abonnement</p>
+
         <div className="mx-auto mt-10 max-w-4xl overflow-hidden rounded-2xl border border-gold/30 shadow-soft">
-          <img src={hero} alt="Modèles imprimés et cartes de Noël brodées sur papier" width={1536} height={640} className="w-full" />
+          <img src={hero} alt="Modèles imprimés et cartes de Noël brodées sur papier" width={1536} height={640} fetchPriority="high" className="w-full" />
         </div>
-        <div className="mx-auto mt-8 max-w-xl overflow-hidden rounded-2xl border border-gold/30 shadow-soft">
-          <video
-            src={demonstrationVideo.url}
-            autoPlay
-            loop
-            muted
-            playsInline
-            preload="metadata"
-            controlsList="nodownload"
-            aria-label="Démonstration de broderie sur papier"
-            width={1080}
-            height={1350}
-            className="block h-auto w-full"
-          />
-        </div>
-        <p className="mx-auto mt-8 max-w-xl font-display text-xl italic opacity-90">
-          Cette année, prenez le temps de créer quelque chose de beau avec vos propres mains.
-        </p>
-        <div className="mt-8">
-          <Cta variant="gold">{mode === "evergreen" ? "Je découvre BordaPapel →" : "Je profite de l'offre de Noël →"}</Cta>
-        </div>
-        <p className="mt-4 text-sm opacity-75">Accès immédiat · Paiement unique · Téléchargement numérique</p>
       </div>
     </section>
   );
@@ -178,16 +188,16 @@ function Problems() {
   return (
     <section className="mx-auto max-w-5xl px-5 py-20 text-center">
       <Eyebrow>Pourquoi commencer la broderie maintenant ?</Eyebrow>
-      <h2 className="reveal text-4xl font-semibold md:text-5xl">Ce cycle vous semble familier ?</h2>
+      <h2 className="reveal text-4xl font-bold md:text-5xl">Ce cycle vous semble familier ?</h2>
       <div className="mt-12 grid gap-5 sm:grid-cols-2">
         {problems.map(([t, d]) => (
           <div key={t} className="reveal rounded-2xl border bg-card p-7 text-left">
-            <h3 className="text-2xl font-semibold text-secondary">{t}</h3>
+            <h3 className="text-2xl font-bold text-secondary">{t}</h3>
             <p className="mt-3 text-muted-foreground">{d}</p>
           </div>
         ))}
       </div>
-      <p className="reveal mt-12 font-display text-2xl italic text-primary">
+      <p className="reveal mt-12 font-display text-2xl text-primary">
         Il existe une façon plus douce de vivre vos soirées.
       </p>
     </section>
@@ -207,7 +217,7 @@ function Why() {
       <div className="mx-auto max-w-5xl px-5">
         <div className="text-center">
           <Eyebrow>Pourquoi choisir la broderie sur papier ?</Eyebrow>
-          <h2 className="reveal text-4xl font-semibold md:text-5xl">Un art presque oublié, quatre bienfaits à la fois.</h2>
+          <h2 className="reveal text-4xl font-bold md:text-5xl">Un art presque oublié, quatre bienfaits à la fois.</h2>
           <p className="mx-auto mt-5 max-w-2xl text-muted-foreground">
             La broderie sur papier est accessible, peu coûteuse et apaisante : une activité créative idéale pour ralentir pendant les fêtes.
           </p>
@@ -217,7 +227,7 @@ function Why() {
             <div key={t} className="reveal flex gap-5 rounded-2xl bg-card p-7 shadow-soft">
               <span className="font-display text-5xl font-bold text-gold">{i + 1}.</span>
               <div>
-                <h3 className="text-2xl font-semibold">{t}</h3>
+                <h3 className="text-2xl font-bold">{t}</h3>
                 <p className="mt-2 text-muted-foreground">{d}</p>
               </div>
             </div>
@@ -265,7 +275,7 @@ function Profiles() {
     <section className="mx-auto max-w-5xl px-5 py-20">
       <div className="text-center">
         <Eyebrow>Qui se lance dans la broderie sur papier ?</Eyebrow>
-        <h2 className="reveal text-4xl font-semibold md:text-5xl">Trois profils de débutantes s'y retrouvent.</h2>
+        <h2 className="reveal text-4xl font-bold md:text-5xl">Trois profils de débutantes s'y retrouvent.</h2>
         <p className="mx-auto mt-5 max-w-2xl text-muted-foreground">
           Pas besoin de savoir enfiler une aiguille ni de vous sentir « manuelle ». Trouvez simplement le profil qui vous ressemble.
         </p>
@@ -277,7 +287,7 @@ function Profiles() {
             role="tab"
             aria-selected={i === active}
             onClick={() => setActive(i)}
-            className={`rounded-full px-5 py-2 text-sm font-semibold transition ${i === active ? "bg-secondary text-secondary-foreground" : "bg-muted text-foreground hover:bg-border"}`}
+            className={`rounded-full px-5 py-2 text-sm font-bold transition ${i === active ? "bg-secondary text-secondary-foreground" : "bg-muted text-foreground hover:bg-border"}`}
           >
             {pr.tab}
           </button>
@@ -286,7 +296,7 @@ function Profiles() {
       <div className="mt-10 grid items-center gap-10 md:grid-cols-2">
         <div>
           <Eyebrow>{p.kicker}</Eyebrow>
-          <h3 className="text-3xl font-semibold md:text-4xl">{p.title}</h3>
+          <h3 className="text-3xl font-bold md:text-4xl">{p.title}</h3>
           <p className="mt-4 text-muted-foreground">{p.text}</p>
           <ul className="mt-6 space-y-3">
             {p.points.map((pt) => (
@@ -301,31 +311,44 @@ function Profiles() {
 }
 
 const steps = [
-  ["Imprimez", "Téléchargez les 200 modèles, choisissez-en un et imprimez-le sur papier classique ou cartonné, avec n'importe quelle imprimante."],
-  ["Brodez", "Suivez les explications pas à pas. Le matériel est simple, peu coûteux et se trouve dans toute mercerie ou boutique en ligne."],
-  ["Gardez, offrez ou vendez", "Encadrez-la. Glissez-la sous le sapin. Ou présentez-la grâce au guide offert. Vous décidez, à votre rythme."],
+  ["Imprimez", "Choisissez un modèle et imprimez-le sur du papier classique ou cartonné."],
+  ["Brodez", "Suivez le guide pas à pas. Une aiguille, du fil et un poinçon suffisent."],
+  ["Créez, offrez ou vendez", "Encadrez votre création, offrez-la ou vendez-la. Vous avancez à votre rythme."],
 ];
 
 function Steps() {
   return (
-    <section className="bg-forest-gradient py-20 text-secondary-foreground">
-      <div className="mx-auto max-w-5xl px-5 text-center">
-        <Eyebrow light>Comment ça marche</Eyebrow>
-        <h2 className="text-4xl font-semibold md:text-5xl">Trois étapes, une création.</h2>
-        <div className="mt-12 grid gap-6 md:grid-cols-3">
+    <section className="bg-forest-gradient py-16 text-secondary-foreground md:py-20">
+      <div className="mx-auto max-w-6xl px-5 text-center">
+        <Eyebrow light>Plus simple qu'il n'y paraît</Eyebrow>
+        <h2 className="text-4xl font-bold md:text-5xl">Trois étapes. Votre première création.</h2>
+        <p className="mx-auto mt-4 max-w-2xl text-lg text-secondary-foreground/85">Pas besoin d'expérience : le modèle vous guide à chaque geste.</p>
+        <div className="mt-10 grid gap-5 md:grid-cols-3">
           {steps.map(([t, d], i) => (
-            <div key={t} className="reveal stitch-border rounded-2xl p-7 text-left">
-              <span className="flex h-12 w-12 items-center justify-center rounded-full bg-gold-gradient font-display text-2xl font-bold text-accent-foreground">{i + 1}</span>
-              <h3 className="mt-5 text-2xl font-semibold">{t}</h3>
-              <p className="mt-3 opacity-85">{d}</p>
+            <div key={t} className="reveal stitch-border rounded-2xl bg-forest-deep/25 p-6 text-left">
+              <span className="flex h-12 w-12 items-center justify-center rounded-full bg-gold-gradient font-display text-2xl font-extrabold text-accent-foreground">{i + 1}</span>
+              <h3 className="mt-5 text-2xl font-bold">{t}</h3>
+              <p className="mt-3 leading-relaxed text-secondary-foreground/85">{d}</p>
             </div>
           ))}
         </div>
-        <figure className="reveal mx-auto mt-14 max-w-3xl">
-          <img src={avantApres} alt="Avant / après : modèle imprimé et broderie terminée" width={1280} height={720} loading="lazy" className="w-full rounded-2xl" />
-          <figcaption className="mt-3 flex justify-between text-sm opacity-80"><span>Avant : le modèle imprimé</span><span>Après : la broderie terminée</span></figcaption>
-        </figure>
-        <div className="mt-10"><Cta variant="gold">Accéder maintenant →</Cta></div>
+
+        <div className="mt-14 grid items-center gap-10 md:grid-cols-[0.85fr_1.15fr]">
+          <div className="mx-auto w-full max-w-sm">
+            <DemonstrationVideo />
+            <p className="mt-3 text-sm font-bold text-gold">Regardez le geste, puis essayez à votre rythme.</p>
+          </div>
+          <div className="text-center md:text-left">
+            <Eyebrow light>Du papier à une pièce unique</Eyebrow>
+            <h3 className="text-3xl font-bold md:text-4xl">Un modèle imprimé. Une création dont vous serez fière.</h3>
+            <p className="mt-4 text-secondary-foreground/85">Les repères vous indiquent où percer et où passer le fil. Vous voyez votre ouvrage prendre forme, point après point.</p>
+            <figure className="reveal mt-6">
+              <img src={avantApres} alt="Avant / après : modèle imprimé et broderie terminée" width={1280} height={720} loading="lazy" className="w-full rounded-2xl border border-gold/20" />
+              <figcaption className="mt-3 flex justify-between gap-4 text-sm text-secondary-foreground/80"><span>Avant : le modèle</span><span>Après : votre broderie</span></figcaption>
+            </figure>
+          </div>
+        </div>
+        <div className="mt-10"><Cta variant="gold">Je crée ma première broderie →</Cta></div>
       </div>
     </section>
   );
@@ -346,14 +369,14 @@ function Gallery() {
     <section className="mx-auto max-w-5xl px-5 py-20">
       <div className="text-center">
         <Eyebrow>Ce que vous pourrez créer</Eyebrow>
-        <h2 className="reveal text-4xl font-semibold md:text-5xl">Du marque-page au souvenir de famille.</h2>
+        <h2 className="reveal text-4xl font-bold md:text-5xl">Du marque-page au souvenir de famille.</h2>
         <p className="mx-auto mt-5 max-w-2xl text-muted-foreground">
           Le coffret réunit 200 modèles classés par catégorie : cartes de Noël brodées, étiquettes cadeaux, cartes de vœux, marque-pages, décorations, petits tableaux floraux et cadeaux personnalisés. Photos d'inspiration.
         </p>
       </div>
       <div className="mt-8 flex flex-wrap justify-center gap-2">
         {cats.map((c) => (
-          <button key={c} onClick={() => setCat(c)} className={`rounded-full px-5 py-2 text-sm font-semibold transition ${c === cat ? "bg-primary text-primary-foreground" : "bg-muted hover:bg-border"}`}>
+          <button key={c} onClick={() => setCat(c)} className={`rounded-full px-5 py-2 text-sm font-bold transition ${c === cat ? "bg-primary text-primary-foreground" : "bg-muted hover:bg-border"}`}>
             {c}
           </button>
         ))}
@@ -364,7 +387,7 @@ function Gallery() {
             <img src={g.img} alt={g.title} width={832} height={832} loading="lazy" className="aspect-square w-full object-cover transition duration-500 hover:scale-105" />
             <figcaption className="p-5">
               <span className="eyebrow text-primary">{g.cat}</span>
-              <h3 className="mt-1 text-2xl font-semibold">{g.title}</h3>
+              <h3 className="mt-1 text-2xl font-bold">{g.title}</h3>
             </figcaption>
           </figure>
         ))}
@@ -385,7 +408,7 @@ function Bonuses() {
       <div className="mx-auto max-w-5xl px-5">
         <div className="text-center">
           <Eyebrow>🎁 Trois cadeaux à déballer avec votre coffret</Eyebrow>
-          <h2 className="reveal text-4xl font-semibold md:text-5xl">Trois bonus inclus, sans supplément.</h2>
+          <h2 className="reveal text-4xl font-bold md:text-5xl">Trois bonus inclus, sans supplément.</h2>
         </div>
         <div className="mt-12 grid gap-6 md:grid-cols-3">
           {bonuses.map((b, i) => (
@@ -396,9 +419,9 @@ function Bonuses() {
               </div>
               <div className="p-6">
                 <p className="eyebrow text-primary">{b.kicker}</p>
-                <h3 className="mt-2 text-2xl font-semibold">{b.title}</h3>
+                <h3 className="mt-2 text-2xl font-bold">{b.title}</h3>
                 <p className="mt-3 text-sm text-muted-foreground">{b.text}</p>
-                <p className="mt-4 text-sm font-semibold text-secondary">✓ Inclus · valeur indicative {euro(campaign.bonusValues[i] ?? 0)}</p>
+                <p className="mt-4 text-sm font-bold text-secondary">✓ Inclus · valeur indicative {euro(campaign.bonusValues[i] ?? 0)}</p>
               </div>
             </article>
           ))}
@@ -419,36 +442,43 @@ const included = [
 
 function Offer({ mode }: { mode: CampaignMode }) {
   return (
-    <section id="offre" className="relative overflow-hidden bg-forest-gradient py-20 text-secondary-foreground">
+    <section id="offre" className="relative overflow-hidden bg-forest-gradient py-16 text-secondary-foreground md:py-20">
       {mode !== "evergreen" && <Snow />}
-      <div className="relative mx-auto max-w-xl px-5">
+      <div className="relative mx-auto max-w-2xl px-5">
         <div className="text-center">
-          <Eyebrow light>{mode === "blackfriday" ? "Black Friday de Noël" : mode === "noel" ? "Offre de Noël" : "Offre"}</Eyebrow>
-          <h2 className="text-4xl font-semibold md:text-5xl">BordaPapel — Coffret Créatif de Noël</h2>
-          <p className="mt-3 opacity-80">Paiement unique. Produit 100 % numérique.</p>
+          <Eyebrow light>{mode === "blackfriday" ? "Black Friday Week · Offre Essentielle" : mode === "noel" ? "Offre de Noël" : "Offre Essentielle"}</Eyebrow>
+          <h2 className="text-4xl font-bold md:text-5xl">Tout pour créer dès aujourd'hui.</h2>
+          <p className="mt-3 text-lg text-secondary-foreground/85">200 modèles, le guide et 3 cadeaux. Un seul paiement.</p>
         </div>
-        <div className="mt-10 rounded-3xl bg-card p-8 text-card-foreground shadow-soft">
-          <div className="mb-6"><Countdown mode={mode} /></div>
-          <ul className="space-y-3">
-            {included.map((x) => <li key={x} className="border-b border-border pb-3 last:border-0">{x}</li>)}
+        <div className="mt-9 rounded-3xl border border-gold/30 bg-card p-5 text-card-foreground shadow-soft md:p-8">
+          {mode !== "evergreen" && (
+            <div className="mb-7 rounded-2xl bg-forest-gradient p-5 text-secondary-foreground">
+              <CampaignCountdown mode={mode} />
+            </div>
+          )}
+          <ul className="space-y-3 text-left font-medium">
+            {included.map((x) => <li key={x} className="border-b border-border pb-3 leading-relaxed last:border-0">{x}</li>)}
           </ul>
-          <div className="mt-8 text-center">
-            {campaign.showReferencePrice && mode !== "evergreen" && (
-              <p className="text-muted-foreground">
-                <s>{euro(campaign.referencePrice)}</s>{" "}
-                <span className="ml-2 rounded-full bg-primary px-2 py-0.5 text-xs font-bold text-primary-foreground">−{discountPct()} %</span>
-              </p>
+
+          <div className="mt-7 rounded-3xl border-2 border-gold/70 bg-gold-gradient p-6 text-center text-accent-foreground md:p-8">
+            {campaign.showReferencePrice && mode !== "evergreen" ? (
+              <>
+                <span className="inline-flex rounded-full bg-primary px-4 py-1.5 text-sm font-extrabold uppercase tracking-wide text-primary-foreground">
+                  {mode === "blackfriday" ? "Black Friday Week" : "Offre de Noël"} · −{discountPct()} %
+                </span>
+                <p className="mt-4 text-base font-bold">Au lieu de <s>{euro(campaign.referencePrice)}</s></p>
+              </>
+            ) : (
+              <span className="inline-flex rounded-full bg-secondary px-4 py-1.5 text-sm font-bold text-secondary-foreground">Offre Essentielle</span>
             )}
-            <p className="mt-2 font-display text-6xl font-bold text-primary">{price}</p>
-            <p className="text-sm text-muted-foreground">Paiement unique · sans abonnement</p>
+            <p className="mt-2 font-display text-7xl font-black leading-none tracking-tight text-primary md:text-8xl">{price}</p>
+            <p className="mt-3 font-bold">Paiement unique · sans abonnement</p>
             <div className="mt-6"><Cta>Oui, je veux mes 200 modèles pour {price}</Cta></div>
-            <p className="mt-4 text-xs text-muted-foreground">
-              Accès immédiat par e-mail après l'achat · Téléchargement numérique · Aucun envoi physique
-            </p>
-            {campaign.showReferencePrice && mode !== "evergreen" && (
-              <p className="mt-2 text-[11px] text-muted-foreground">{campaign.referencePriceNote}</p>
-            )}
+            <p className="mt-4 text-xs font-medium opacity-80">Accès immédiat par e-mail · Produit 100 % numérique · Aucun envoi physique</p>
           </div>
+          {campaign.showReferencePrice && mode !== "evergreen" && (
+            <p className="mt-3 text-center text-[11px] leading-relaxed text-muted-foreground">{campaign.referencePriceNote}</p>
+          )}
         </div>
       </div>
     </section>
@@ -460,12 +490,12 @@ function Testimonials() {
   return (
     <section className="mx-auto max-w-5xl px-5 py-20 text-center">
       <Eyebrow>💬 Elles ont essayé</Eyebrow>
-      <h2 className="text-4xl font-semibold md:text-5xl">Ce qu'en disent nos clientes.</h2>
+      <h2 className="text-4xl font-bold md:text-5xl">Ce qu'en disent nos clientes.</h2>
       <div className="mt-10 grid gap-6 md:grid-cols-3">
         {campaign.testimonials.map((t) => (
           <blockquote key={t.name} className="rounded-2xl bg-card p-6 text-left shadow-soft">
             <p className="italic">« {t.text} »</p>
-            <footer className="mt-4 text-sm font-semibold">{t.name} · {t.city}</footer>
+            <footer className="mt-4 text-sm font-bold">{t.name} · {t.city}</footer>
           </blockquote>
         ))}
       </div>
@@ -478,7 +508,7 @@ function Guarantee() {
     <section className="mx-auto max-w-3xl px-5 py-20 text-center">
       <div className="stitch-border rounded-3xl bg-card p-10">
         <Eyebrow>🛡️ Une garantie simple</Eyebrow>
-        <h2 className="text-4xl font-semibold md:text-5xl">{campaign.guaranteeDays} jours satisfaite ou remboursée.</h2>
+        <h2 className="text-4xl font-bold md:text-5xl">{campaign.guaranteeDays} jours satisfaite ou remboursée.</h2>
         <p className="mt-5 text-muted-foreground">
           Essayez le coffret complet : imprimez les modèles, réalisez vos premières broderies. Si la broderie sur papier ne vous plaît pas, envoyez-nous simplement un e-mail dans les {campaign.guaranteeDays} jours suivant l'achat et nous vous rembourserons intégralement, selon nos conditions de remboursement.
         </p>
@@ -503,12 +533,12 @@ function Faq() {
       <div className="mx-auto max-w-3xl px-5">
         <div className="text-center">
           <Eyebrow>Questions fréquentes</Eyebrow>
-          <h2 className="text-4xl font-semibold md:text-5xl">Vos questions, nos réponses.</h2>
+          <h2 className="text-4xl font-bold md:text-5xl">Vos questions, nos réponses.</h2>
         </div>
         <Accordion type="single" collapsible className="mt-10 rounded-2xl bg-card px-6">
           {faqs.map(([q, a]) => (
             <AccordionItem key={q} value={q}>
-              <AccordionTrigger className="text-left text-base font-semibold">{q}</AccordionTrigger>
+              <AccordionTrigger className="text-left text-base font-bold">{q}</AccordionTrigger>
               <AccordionContent className="text-muted-foreground">{a}</AccordionContent>
             </AccordionItem>
           ))}
@@ -524,7 +554,7 @@ function Closing({ mode }: { mode: CampaignMode }) {
       {mode !== "evergreen" && <Snow />}
       <div className="relative mx-auto max-w-3xl px-5">
         <Eyebrow light>Une dernière chose</Eyebrow>
-        <h2 className="text-4xl font-semibold leading-tight md:text-5xl">
+        <h2 className="text-4xl font-bold leading-tight md:text-5xl">
           {mode === "evergreen" ? (
             "Ce soir, au lieu de faire défiler votre écran, brodez."
           ) : (
@@ -537,7 +567,7 @@ function Closing({ mode }: { mode: CampaignMode }) {
         <p className="mx-auto mt-6 max-w-2xl opacity-90">
           Imaginez la joie d'offrir une carte, une décoration ou un petit souvenir que vous avez réalisé vous-même. Avec 200 modèles prêts à imprimer, votre prochaine création commence aujourd'hui.
         </p>
-        <p className="mt-4 font-display text-xl italic text-gold">Et gardez-en un peu pour vous : le plaisir de créer est aussi un cadeau.</p>
+        <p className="mt-4 font-display text-xl text-gold">Et gardez-en un peu pour vous : le plaisir de créer est aussi un cadeau.</p>
         <div className="mt-10"><Cta variant="gold">Je commence mes créations de Noël →</Cta></div>
       </div>
     </section>
@@ -552,7 +582,7 @@ function StickyCta() {
         <p className="text-xs opacity-75">Coffret 200 modèles</p>
         <p className="font-display text-2xl font-bold text-gold">{price}</p>
       </div>
-      <button type="button" data-purchase-cta onClick={openUpsell} className="rounded-full bg-primary px-5 py-3 text-sm font-semibold text-primary-foreground">J'en profite →</button>
+      <button type="button" data-purchase-cta onClick={openUpsell} className="rounded-full bg-primary px-5 py-3 text-sm font-bold text-primary-foreground">J'en profite →</button>
     </div>
   );
 }
@@ -565,10 +595,10 @@ export function Landing() {
       <main className="pb-20 md:pb-0">
         <Hero mode={mode} />
         <Problems />
-        <Why />
-        <Profiles />
         <Steps />
         <Gallery />
+        <Why />
+        <Profiles />
         <Bonuses />
         <Offer mode={mode} />
         <Testimonials />

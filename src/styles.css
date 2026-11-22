@@ -65,8 +65,8 @@
   --color-gold: var(--gold);
   --color-forest: var(--forest);
   --color-forest-deep: var(--forest-deep);
-  --font-serif: "Cormorant Garamond", Georgia, serif;
-  --font-sans: "Jost", system-ui, sans-serif;
+  --font-serif: "Nunito", system-ui, sans-serif;
+  --font-sans: "Nunito Sans", system-ui, sans-serif;
   --color-sidebar: var(--sidebar);
   --color-sidebar-foreground: var(--sidebar-foreground);
   --color-sidebar-primary: var(--sidebar-primary);
@@ -132,15 +132,27 @@
 }
 
 @layer base {
-  body { font-family: var(--font-sans); }
-  h1, h2, h3, .font-display { font-family: var(--font-serif); }
+  body {
+    font-family: var(--font-sans);
+    font-size: 1rem;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+  h1, h2, h3, .font-display {
+    font-family: var(--font-serif);
+    letter-spacing: -0.025em;
+    line-height: 1.16;
+    text-wrap: balance;
+  }
+  p { text-wrap: pretty; }
 }
 
 @utility bg-forest-gradient { background: var(--gradient-forest); }
 @utility bg-gold-gradient { background: var(--gradient-gold); }
 @utility shadow-soft { box-shadow: var(--shadow-soft); }
 @utility shadow-cta { box-shadow: var(--shadow-cta); }
-@utility eyebrow { font-family: var(--font-sans); font-size: 0.75rem; letter-spacing: 0.22em; text-transform: uppercase; font-weight: 600; }
+@utility eyebrow { font-family: var(--font-sans); font-size: 0.75rem; letter-spacing: 0.16em; line-height: 1.5; text-transform: uppercase; font-weight: 700; }
 
 @keyframes snow { from { transform: translateY(-10vh); } to { transform: translateY(110vh); } }
 @keyframes twinkle { 0%,100% { opacity: .35 } 50% { opacity: 1 } }

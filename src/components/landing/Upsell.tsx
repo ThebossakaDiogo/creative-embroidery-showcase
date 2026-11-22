@@ -20,7 +20,13 @@ import {
   useState,
   type ReactNode,
 } from "react";
-import { campaign, euro } from "@/config/campaign";
+import { campaign, euro, getMode } from "@/config/campaign";
+import { CampaignCountdown } from "@/components/landing/CampaignCountdown";
+import christmasCollection from "@/assets/galerie-ornements.avif";
+import personalizedGifts from "@/assets/profil-cadeaux.avif";
+import premiumFlowers from "@/assets/galerie-florals.avif";
+import businessGuide from "@/assets/bonus-guide-ventes.avif";
+import creativeCalendar from "@/assets/bonus-vitrine-atelier.avif";
 
 const UpsellContext = createContext<() => void>(() => {});
 
@@ -28,12 +34,12 @@ export function useUpsell() {
   return useContext(UpsellContext);
 }
 
-const premiumBonuses: { title: string; detail: string; icon: LucideIcon }[] = [
-  { title: "Collection Noël Exclusive", detail: "100 modèles de Noël supplémentaires", icon: Snowflake },
-  { title: "Atelier Cadeaux Personnalisés", detail: "Le guide pour créer des cadeaux uniques", icon: Gift },
-  { title: "Collection Fleurs Premium", detail: "50 modèles floraux exclusifs", icon: Flower2 },
-  { title: "Guide Business Créatif", detail: "Pour présenter et vendre vos créations", icon: BriefcaseBusiness },
-  { title: "Calendrier Créatif 30 Jours", detail: "30 jours de projets et défis créatifs", icon: CalendarDays },
+const premiumBonuses: { title: string; detail: string; icon: LucideIcon; image: string; alt: string }[] = [
+  { title: "Collection Noël Exclusive", detail: "100 modèles de Noël en plus", icon: Snowflake, image: christmasCollection, alt: "Décorations de Noël de la collection exclusive" },
+  { title: "Atelier Cadeaux Personnalisés", detail: "Créez des cadeaux uniques", icon: Gift, image: personalizedGifts, alt: "Cadeau personnalisé avec une carte brodée" },
+  { title: "Collection Fleurs Premium", detail: "50 modèles floraux en plus", icon: Flower2, image: premiumFlowers, alt: "Modèles floraux de la collection Premium" },
+  { title: "Guide Business Créatif", detail: "Présentez et vendez vos créations", icon: BriefcaseBusiness, image: businessGuide, alt: "Guide pour présenter et vendre ses créations" },
+  { title: "Calendrier Créatif 30 Jours", detail: "30 jours de projets créatifs", icon: CalendarDays, image: creativeCalendar, alt: "Présentation du calendrier créatif de 30 jours" },
 ];
 
 function UpsellDialog({ open, onOpenChange }: { open: boolean; onOpenChange: (open: boolean) => void }) {
@@ -45,7 +51,6 @@ function UpsellDialog({ open, onOpenChange }: { open: boolean; onOpenChange: (op
 
   useEffect(() => {
     if (!open || !overlayRef.current || !contentRef.current) return;
-
     const panel = contentRef.current.querySelector(".upsell-panel");
     if (!panel) return;
 
@@ -73,6 +78,8 @@ function UpsellDialog({ open, onOpenChange }: { open: boolean; onOpenChange: (op
           { opacity: 1, y: 0, duration: 0.28, stagger: 0.055 },
           "-=0.25",
         );
+      gsap.to(".upsell-glow", { opacity: 0.55, scale: 1.16, duration: 1.8, repeat: -1, yoyo: true, stagger: 0.3 });
+      gsap.to(".upsell-urgency", { scale: 1.035, duration: 1.3, repeat: -1, yoyo: true, ease: "sine.inOut" });
     }, contentRef);
 
     return () => ctx.revert();
@@ -94,84 +101,99 @@ function UpsellDialog({ open, onOpenChange }: { open: boolean; onOpenChange: (op
   return (
     <Dialog.Root open={open} onOpenChange={onOpenChange}>
       <Dialog.Portal>
-        <Dialog.Overlay ref={overlayRef} className="fixed inset-0 z-[100] bg-forest-deep/85 backdrop-blur-sm" />
-        <Dialog.Content ref={contentRef} className="fixed inset-0 z-[101] overflow-y-auto p-4 focus:outline-none">
-          <div className="flex min-h-full items-center justify-center py-4">
-            <div className="upsell-panel relative w-full max-w-3xl overflow-hidden rounded-3xl border border-gold/40 bg-background shadow-soft">
+        <Dialog.Overlay ref={overlayRef} className="fixed inset-0 z-[100] bg-forest-deep/90 backdrop-blur-sm" />
+        <Dialog.Content ref={contentRef} className="fixed inset-0 z-[101] overflow-y-auto p-3 focus:outline-none md:p-4">
+          <div className="flex min-h-full justify-center py-3">
+            <div className="upsell-panel relative my-auto w-full max-w-4xl overflow-hidden rounded-3xl border-2 border-gold/60 bg-background shadow-soft">
               <Dialog.Close asChild>
                 <button
                   type="button"
                   aria-label="Fermer la fenêtre"
-                  className="absolute right-4 top-4 z-10 flex h-10 w-10 items-center justify-center rounded-full border border-gold/30 bg-forest-deep/60 text-secondary-foreground transition hover:bg-forest-deep"
+                  className="absolute right-4 top-4 z-20 flex h-10 w-10 items-center justify-center rounded-full border border-gold/40 bg-forest-deep/70 text-secondary-foreground transition hover:bg-forest-deep"
                 >
                   <X className="h-5 w-5" aria-hidden />
                 </button>
               </Dialog.Close>
 
-              <div className="relative overflow-hidden bg-forest-gradient px-6 pb-7 pt-8 text-center text-secondary-foreground md:px-10">
-                <div className="mb-4 flex items-center justify-center gap-4 text-gold" aria-hidden>
-                  <Sparkles className="upsell-sparkle h-6 w-6" />
-                  <Gift className="upsell-gift h-14 w-14" strokeWidth={1.5} />
-                  <Sparkles className="upsell-sparkle h-6 w-6" />
+              <div className="relative overflow-hidden bg-forest-gradient px-5 pb-6 pt-16 text-center text-secondary-foreground md:px-10 md:pt-7">
+                <div className="upsell-glow absolute -left-10 top-0 h-44 w-44 rounded-full bg-gold/20 blur-3xl" aria-hidden />
+                <div className="upsell-glow absolute -right-10 bottom-0 h-44 w-44 rounded-full bg-primary/30 blur-3xl" aria-hidden />
+                <div className="relative">
+                  <div className="upsell-urgency mb-5 inline-flex items-center gap-2 rounded-full bg-primary px-4 py-2 text-xs font-extrabold uppercase tracking-widest text-primary-foreground shadow-cta">
+                    <Sparkles className="h-4 w-4" aria-hidden />
+                    Black Friday Week · Offre à durée limitée
+                  </div>
+                  <div className="mb-3 flex items-center justify-center gap-4 text-gold" aria-hidden>
+                    <Sparkles className="upsell-sparkle h-6 w-6" />
+                    <Gift className="upsell-gift h-14 w-14" strokeWidth={1.5} />
+                    <Sparkles className="upsell-sparkle h-6 w-6" />
+                  </div>
+                  <Dialog.Title className="mx-auto max-w-2xl font-display text-3xl font-extrabold leading-tight md:text-4xl">
+                    🎁 Attendez ! Votre expérience complète vous attend.
+                  </Dialog.Title>
+                  <Dialog.Description className="mx-auto mt-3 max-w-xl text-base leading-relaxed text-secondary-foreground/90">
+                    Pour seulement {additionalPrice} de plus, recevez 5 bonus exclusifs et créez encore plus pour Noël.
+                  </Dialog.Description>
+                  <div className="mx-auto mt-5 max-w-md rounded-2xl border border-gold/30 bg-forest-deep/45 p-4">
+                    <CampaignCountdown mode={getMode()} />
+                  </div>
                 </div>
-                <p className="eyebrow mb-3 text-gold">Black Friday de Noël · Offre facultative</p>
-                <Dialog.Title className="mx-auto max-w-xl font-display text-3xl font-semibold leading-tight md:text-4xl">
-                  🎁 Attendez ! Et si vous profitiez de l'expérience complète ?
-                </Dialog.Title>
-                <Dialog.Description className="mx-auto mt-4 max-w-xl text-sm leading-relaxed text-secondary-foreground/85 md:text-base">
-                  Pour seulement {additionalPrice} de plus, débloquez 5 bonus exclusifs et encore plus de créations pour Noël.
-                </Dialog.Description>
               </div>
 
-              <div className="p-5 md:p-8">
-                <div className="mb-5 flex items-start gap-3 rounded-2xl bg-muted p-4 text-sm text-muted-foreground">
+              <div className="bg-primary px-5 py-3 text-center text-sm font-extrabold uppercase tracking-wide text-primary-foreground">
+                150 modèles + 3 ressources supplémentaires · Seulement {additionalPrice} de plus
+              </div>
+
+              <div className="p-4 md:p-7">
+                <div className="mb-5 flex items-start gap-3 rounded-2xl bg-muted p-4 text-sm leading-relaxed text-muted-foreground">
                   <Check className="mt-0.5 h-5 w-5 shrink-0 text-secondary" aria-hidden />
                   <p>
-                    <strong className="text-foreground">Tout le contenu Essentiel est inclus :</strong> 200 modèles, cours vidéo pour débutantes, guide de matériel et instructions, 3 bonus originaux et accès à vie.
+                    <strong className="text-foreground">Tout le contenu Essentiel est inclus :</strong> 200 modèles, cours vidéo, guide de démarrage, 3 bonus originaux et accès à vie.
                   </p>
                 </div>
 
-                <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
-                  {premiumBonuses.map(({ title, detail, icon: Icon }) => (
-                    <div key={title} className="upsell-miniature rounded-2xl border bg-card p-3 text-center lg:p-2">
-                      <div className="mx-auto mb-2 flex h-11 w-11 items-center justify-center rounded-xl bg-forest-gradient text-gold">
-                        <Icon className="h-5 w-5" aria-hidden />
+                <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
+                  {premiumBonuses.map(({ title, detail, icon: Icon, image, alt }) => (
+                    <div key={title} className="upsell-miniature overflow-hidden rounded-2xl border border-gold/25 bg-card shadow-soft">
+                      <div className="relative aspect-[4/3] overflow-hidden bg-muted">
+                        <img src={image} alt={alt} width={320} height={240} loading="lazy" className="h-full w-full object-cover" />
+                        <div className="absolute bottom-2 left-2 flex h-9 w-9 items-center justify-center rounded-xl bg-forest-gradient text-gold shadow-soft">
+                          <Icon className="h-4 w-4" aria-hidden />
+                        </div>
                       </div>
-                      <h3 className="font-sans text-xs font-semibold leading-snug">{title}</h3>
-                      <p className="mt-1 text-[11px] leading-snug text-muted-foreground">{detail}</p>
+                      <div className="p-3 text-center">
+                        <h3 className="font-sans text-xs font-extrabold leading-snug">{title}</h3>
+                        <p className="mt-1 text-[11px] leading-snug text-muted-foreground">{detail}</p>
+                      </div>
                     </div>
                   ))}
                 </div>
 
-                <div className="mt-6 text-center">
-                  <span className="inline-flex rounded-full bg-gold-gradient px-4 py-1.5 text-sm font-bold text-accent-foreground">
-                    Seulement {additionalPrice} de plus
-                  </span>
-                  <p className="mt-3 font-display text-2xl font-semibold text-secondary">
-                    Offre Premium de Noël · {euro(campaign.premiumPrice)}
-                  </p>
-                </div>
-
-                <div className="mt-5 flex flex-col gap-3">
-                  <button
-                    type="button"
-                    onClick={acceptPremium}
-                    disabled={!premiumAvailable}
-                    className="rounded-full bg-gold-gradient px-6 py-4 text-base font-bold text-accent-foreground shadow-soft transition hover:brightness-105 disabled:cursor-not-allowed disabled:opacity-55"
-                  >
-                    Oui, je veux l'offre Premium — {euro(campaign.premiumPrice)}
-                  </button>
-                  <button
-                    type="button"
-                    onClick={keepEssential}
-                    className="rounded-full border border-border bg-card px-6 py-3 text-sm font-semibold text-foreground transition hover:bg-muted"
-                  >
-                    Non merci, je garde mon offre à {euro(campaign.price)}
-                  </button>
+                <div className="mt-6 rounded-3xl border-2 border-gold/60 bg-gold-gradient p-5 text-center text-accent-foreground">
+                  <p className="text-sm font-extrabold uppercase tracking-widest">Offre Premium de Noël</p>
+                  <p className="mt-1 font-display text-5xl font-black tracking-tight text-primary">{euro(campaign.premiumPrice)}</p>
+                  <p className="mt-1 text-sm font-bold">Au lieu de {euro(campaign.price)} pour l'offre Essentielle</p>
+                  <div className="mt-4 flex flex-col gap-3">
+                    <button
+                      type="button"
+                      onClick={acceptPremium}
+                      disabled={!premiumAvailable}
+                      className={`rounded-full bg-primary px-6 py-4 text-base font-extrabold text-primary-foreground shadow-cta transition hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-55 ${premiumAvailable ? "cta-pulse" : ""}`}
+                    >
+                      Oui, je veux l'offre Premium — {euro(campaign.premiumPrice)}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={keepEssential}
+                      className="rounded-full border border-primary/30 bg-card px-6 py-3 text-sm font-bold text-foreground transition hover:bg-muted"
+                    >
+                      Non merci, je garde mon offre à {euro(campaign.price)}
+                    </button>
+                  </div>
                 </div>
 
                 {checkoutPending && (
-                  <p role="status" className="mt-4 text-center text-xs text-muted-foreground">
+                  <p role="status" className="mt-4 text-center text-xs font-semibold text-muted-foreground">
                     Paiement en cours de configuration. Aucun débit ne sera effectué.
                   </p>
                 )}
